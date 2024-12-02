@@ -1,4 +1,5 @@
 // Add this to a file named 'netsapiens-integration.js'
+alert('Integration script loaded');
 (function() {
     // Create and add the new tab
     function addIntegrationsTab() {
