@@ -1,12 +1,9 @@
 // Simple NetSapiens Test Button Integration
 (function() {
-    // Wait for page to load
     $(document).ready(function() {
-        // Find Call History button since we know it exists
         const existingButton = $('#nav-callhistory');
         
         if (existingButton) {
-            // Create new Test button with same styling
             const newButton = 
                 '<li id="nav-test" class="">' +
                 '<a href="#" class="nav-link">' +
@@ -17,12 +14,16 @@
                 '</a>' +
                 '</li>';
 
-            // Add after call history
             existingButton.after(newButton);
 
-            // Add click handler
+            // Added logging on click
             $('#nav-test').click(function() {
-                alert('Test button clicked!');
+                console.log('User:', sub_user);
+                console.log('Domain:', sub_domain);
+                console.log('Email:', sub_email);
+                console.log('Scope:', sub_scope);
+                
+                alert('Check the console (F12) for user information!');
             });
         }
     });
