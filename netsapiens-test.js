@@ -22,6 +22,7 @@
                 console.log('Domain:', sub_domain);
                 console.log('Email:', sub_email);
                 console.log('Scope:', sub_scope);
+                console.log('SMS Numbers:', window.smsnumbers);
                 
                 alert('Check the console (F12) for user information!');
             });
