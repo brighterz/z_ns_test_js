@@ -1,245 +1,264 @@
 
-// NetSapiens Portal Inspector
+// NetSapiens Portal Integration Script
+// This script can be injected into the NetSapiens portal to access additional functionality
+
 (function() {
-  console.log("NetSapiens Portal Inspector loaded");
+  console.log("Synapsiens SMS Integration Loading...");
   
-  // Basic user info we already know about
-  const userInfo = {
-    user: document.querySelector('#user-id') ? document.querySelector('#user-id').textContent.trim() : '',
-    domain: document.querySelector('.domain') ? document.querySelector('.domain').textContent.trim() : '',
-    email: document.querySelector('.email') ? document.querySelector('.email').textContent.trim() : '',
-    scope: document.querySelector('.scope') ? document.querySelector('.scope').textContent.trim() : ''
-  };
+  // Store the JWT token provided
+  const jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJucyIsImV4cCI6MTc0MDc4NDIzNSwiaWF0IjoxNzQwNjk3ODM1LCJpc3MiOiJ2b2lwLmJyaWdodGVyLnRlbCIsImp0aSI6IjUzMDgwMWUxN2M0Njk5YjRlNGRiMzJhNWRkMmRlNmE2OTQwOThlMTMiLCJzdWIiOiI5OThAYnJpZ2h0ZXJ0ZWwiLCJ0aW1lX291dCI6ODY0MDAwMDAsImRvbWFpbiI6ImJyaWdodGVydGVsIiwidGVycml0b3J5IjoiYnJpZ2h0ZXJ0ZWwiLCJ1c2VyIjoiOTk4IiwidXNlcl9lbWFpbCI6InphY2tAYnJpZ2h0ZXIudGVsIiwidXNlcl9zY29wZSI6Ik9mZmljZSBNYW5hZ2VyIiwiZGlzcGxheU5hbWUiOiJBUEkgVXNlcjIiLCJtYXNrX2NoYWluIjpudWxsLCJkZXBhcnRtZW50IjoiIiwibG9naW4iOiI5OThAYnJpZ2h0ZXJ0ZWwifQ.1YdbXr9GEokPnZFOtJwxEl6NNjEgBUcCh0fs84mPaFM";
   
-  console.log("Current User Information:", userInfo);
-  
-  // Helper to safely inspect objects
-  function safeInspect(obj, name) {
-    try {
-      if (!obj) return `${name}: Not available`;
-      
-      const props = Object.getOwnPropertyNames(obj)
-        .filter(prop => typeof obj[prop] !== 'function')
-        .reduce((acc, prop) => {
-          try {
-            acc[prop] = obj[prop];
-          } catch (e) {
-            acc[prop] = "Error accessing property";
-          }
-          return acc;
-        }, {});
-      
-      console.log(`Inspecting ${name}:`, props);
-      return props;
-    } catch (e) {
-      console.error(`Error inspecting ${name}:`, e);
-      return `Error inspecting ${name}`;
-    }
-  }
-  
-  // Create a UI element to show inspection results
-  function createInspectorUI() {
-    const inspectorDiv = document.createElement('div');
-    inspectorDiv.id = 'ns-inspector';
-    inspectorDiv.style.position = 'fixed';
-    inspectorDiv.style.bottom = '10px';
-    inspectorDiv.style.right = '10px';
-    inspectorDiv.style.backgroundColor = '#fff';
-    inspectorDiv.style.border = '1px solid #ccc';
-    inspectorDiv.style.padding = '10px';
-    inspectorDiv.style.zIndex = '9999';
-    inspectorDiv.style.maxHeight = '300px';
-    inspectorDiv.style.maxWidth = '400px';
-    inspectorDiv.style.overflow = 'auto';
-    inspectorDiv.innerHTML = `
-      <h3 style="margin-top: 0;">NetSapiens Inspector</h3>
-      <div>
-        <button id="inspect-global">Inspect Globals</button>
-        <button id="inspect-api">Inspect API</button>
-        <button id="inspect-ui">Inspect UI</button>
-        <button id="inspect-tabs">Available Tabs</button>
-      </div>
-      <div id="inspector-results" style="margin-top: 10px; font-size: 12px;"></div>
-    `;
-    document.body.appendChild(inspectorDiv);
+  // Exploration functions
+  function exploreGlobals() {
+    console.log("=== EXPLORING NETSAPIENS GLOBALS ===");
     
-    // Add event listeners
-    document.getElementById('inspect-global').addEventListener('click', inspectGlobals);
-    document.getElementById('inspect-api').addEventListener('click', inspectAPI);
-    document.getElementById('inspect-ui').addEventListener('click', inspectUI);
-    document.getElementById('inspect-tabs').addEventListener('click', inspectTabs);
-  }
-  
-  // Inspect global objects
-  function inspectGlobals() {
-    const results = document.getElementById('inspector-results');
-    results.innerHTML = '<h4>Inspecting Global Objects...</h4>';
-    
-    // Look for NetSapiens global objects
-    const nsObjects = {};
-    for (const key in window) {
-      if (key.includes('ns') || key.includes('NS') || key.includes('Net') || key.includes('portal')) {
-        nsObjects[key] = safeInspect(window[key], key);
-      }
-    }
-    
-    results.innerHTML += `<pre>${JSON.stringify(nsObjects, null, 2)}</pre>`;
-  }
-  
-  // Inspect API endpoints
-  function inspectAPI() {
-    const results = document.getElementById('inspector-results');
-    results.innerHTML = '<h4>Inspecting API Endpoints...</h4>';
-    
-    // Check for API objects or namespaces
-    const apiObjects = {};
-    
-    // Common API patterns to check
-    ['api', 'API', 'nsAPI', 'nsapi', 'ns-api', 'portal.api', 'NS.api'].forEach(apiName => {
-      const parts = apiName.split('.');
-      let obj = window;
-      let found = true;
-      
-      for (const part of parts) {
-        if (obj && obj[part]) {
-          obj = obj[part];
-        } else {
-          found = false;
-          break;
-        }
-      }
-      
-      if (found) {
-        apiObjects[apiName] = safeInspect(obj, apiName);
-      }
-    });
-    
-    // Look for XHR requests in Network tab
-    results.innerHTML += `<p>API objects found: ${Object.keys(apiObjects).length}</p>`;
-    results.innerHTML += `<pre>${JSON.stringify(apiObjects, null, 2)}</pre>`;
-    results.innerHTML += `<p>Note: Check browser Network tab for actual API calls</p>`;
-  }
-  
-  // Inspect UI components
-  function inspectUI() {
-    const results = document.getElementById('inspector-results');
-    results.innerHTML = '<h4>Inspecting UI Components...</h4>';
-    
-    // Check for common UI elements
-    const navItems = document.querySelectorAll('.nav-item, .nav-link, .menu-item');
-    const uiComponents = {
-      navItems: Array.from(navItems).map(el => ({
-        text: el.textContent.trim(),
-        id: el.id,
-        classes: el.className,
-        href: el.href || ''
-      }))
+    // Create a container for our results
+    let results = {
+      window: {},
+      document: {},
+      navigator: {},
+      location: {},
+      localStorage: {},
+      sessionStorage: {},
+      custom: {}
     };
     
-    results.innerHTML += `<pre>${JSON.stringify(uiComponents, null, 2)}</pre>`;
-  }
-  
-  // Inspect available tabs
-  function inspectTabs() {
-    const results = document.getElementById('inspector-results');
-    results.innerHTML = '<h4>Inspecting Available Tabs...</h4>';
-    
-    // Look for tab elements
-    const tabElements = document.querySelectorAll('.tab, .nav-item, [role="tab"], .tab-button');
-    const tabs = Array.from(tabElements).map(el => ({
-      text: el.textContent.trim(),
-      id: el.id,
-      classes: el.className
-    }));
-    
-    // Also check if there's a global tabs object
-    let globalTabs = null;
-    ['tabs', 'Tabs', 'nsTabs', 'portal.tabs'].forEach(tabName => {
-      const parts = tabName.split('.');
-      let obj = window;
-      let found = true;
+    // Explore window properties
+    try {
+      results.window = {
+        NS: window.NS ? Object.keys(window.NS) : 'Not available',
+        $: window.$ ? 'jQuery available' : 'jQuery not available',
+        jQuery: window.jQuery ? 'jQuery available' : 'jQuery not available',
+        angular: window.angular ? 'Angular available' : 'Angular not available',
+        React: window.React ? 'React available' : 'React not available',
+        Vue: window.Vue ? 'Vue available' : 'Vue not available',
+        apiEndpoints: window.apiEndpoints || 'Not available',
+        user: window.user || 'Not available',
+        domain: window.domain || 'Not available',
+        config: window.config || 'Not available',
+        portalVersion: window.portalVersion || 'Not available'
+      };
       
-      for (const part of parts) {
-        if (obj && obj[part]) {
-          obj = obj[part];
-          found = true;
-        } else {
-          found = false;
-          break;
-        }
+      // NS specific object
+      if (window.NS) {
+        results.custom.NS = {
+          user: window.NS.user || 'Not available',
+          domain: window.NS.domain || 'Not available',
+          config: window.NS.config || 'Not available',
+          api: window.NS.api ? Object.keys(window.NS.api) : 'Not available',
+          utils: window.NS.utils ? Object.keys(window.NS.utils) : 'Not available',
+          endpoints: window.NS.endpoints || 'Not available'
+        };
       }
-      
-      if (found) {
-        globalTabs = safeInspect(obj, tabName);
-      }
-    });
-    
-    results.innerHTML += `<h5>Tab Elements:</h5><pre>${JSON.stringify(tabs, null, 2)}</pre>`;
-    if (globalTabs) {
-      results.innerHTML += `<h5>Global Tabs Object:</h5><pre>${JSON.stringify(globalTabs, null, 2)}</pre>`;
+    } catch (e) {
+      results.window.error = e.message;
     }
+    
+    // Location information
+    try {
+      results.location = {
+        href: window.location.href,
+        host: window.location.host,
+        pathname: window.location.pathname,
+        search: window.location.search,
+        hash: window.location.hash
+      };
+    } catch (e) {
+      results.location.error = e.message;
+    }
+    
+    console.log("Global Environment Exploration Results:", results);
+    return results;
   }
   
-  // Add a function to explore available APIs
-  function exploreAPIs() {
-    // Looking at the structure from your screenshots
-    const apiPaths = [
-      'ns-api.authenticate',
-      'ns-api.getDialPlan',
-      'ns-api.getDialRule',
-      'ns-api.getTranscriptionIntelligence',
-      'ns-api.getTranscriptions',
-      'ns-api.postAnswerRule',
-      'ns-api.postDialRule',
-      'ns-api.saveAudio',
-      'voice-api.getLanguages',
-      'voice-api.getVoices',
-      'voice-api.synthesize'
-    ];
+  function testApiAccess() {
+    console.log("=== TESTING API ACCESS WITH JWT TOKEN ===");
     
-    console.log("Exploring API endpoints...");
-    const apiResults = {};
-    
-    apiPaths.forEach(path => {
-      const parts = path.split('.');
-      let obj = window;
-      let found = true;
-      
-      for (const part of parts) {
-        if (obj && obj[part]) {
-          obj = obj[part];
-        } else {
-          found = false;
-          break;
-        }
+    // Make a request to a NetSapiens API endpoint using the JWT token
+    fetch('https://voip.brighter.tel/ns-api/v2/domains', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${jwtToken}`
       }
+    })
+    .then(response => {
+      console.log("API Response Status:", response.status);
+      return response.json();
+    })
+    .then(data => {
+      console.log("API Response Data:", data);
       
-      if (found) {
-        apiResults[path] = typeof obj;
-        console.log(`Found API: ${path} (${typeof obj})`);
+      // Display the first 3 domains if available
+      if (Array.isArray(data) && data.length > 0) {
+        const domains = data.slice(0, 3);
+        console.log("First 3 domains:", domains);
       }
+    })
+    .catch(error => {
+      console.error("API Request Error:", error);
     });
+  }
+
+  // Create UI elements to interact with our script
+  function createUI() {
+    console.log("=== CREATING SMS INTEGRATION UI ===");
     
-    console.log("API exploration results:", apiResults);
+    // Create a container for our SMS integration
+    const container = document.createElement('div');
+    container.id = 'synapsiens-sms-container';
+    container.style.cssText = `
+      position: fixed;
+      top: 50px;
+      right: 20px;
+      width: 300px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 9999;
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      display: none;
+    `;
+    
+    // Create header
+    const header = document.createElement('div');
+    header.style.cssText = `
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    `;
+    
+    const title = document.createElement('h3');
+    title.textContent = 'Synapsiens SMS';
+    title.style.margin = '0';
+    
+    const closeButton = document.createElement('button');
+    closeButton.textContent = 'X';
+    closeButton.style.cssText = `
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    `;
+    closeButton.onclick = () => {
+      container.style.display = 'none';
+    };
+    
+    header.appendChild(title);
+    header.appendChild(closeButton);
+    container.appendChild(header);
+    
+    // Create buttons
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.flexDirection = 'column';
+    buttonContainer.style.gap = '10px';
+    
+    const exploreButton = document.createElement('button');
+    exploreButton.textContent = 'Explore Globals';
+    exploreButton.onclick = exploreGlobals;
+    
+    const testApiButton = document.createElement('button');
+    testApiButton.textContent = 'Test API Access';
+    testApiButton.onclick = testApiAccess;
+    
+    buttonContainer.appendChild(exploreButton);
+    buttonContainer.appendChild(testApiButton);
+    container.appendChild(buttonContainer);
+    
+    // Create results container
+    const resultsContainer = document.createElement('div');
+    resultsContainer.id = 'synapsiens-results';
+    resultsContainer.style.cssText = `
+      margin-top: 10px;
+      padding: 10px;
+      border-top: 1px solid #eee;
+      max-height: 300px;
+      overflow-y: auto;
+      font-size: 12px;
+    `;
+    
+    container.appendChild(resultsContainer);
+    document.body.appendChild(container);
+    
+    // Create toggle button in the header
+    const toggleButton = document.createElement('li');
+    toggleButton.innerHTML = '<a href="#" class="header-link">SMS Tools</a>';
+    toggleButton.onclick = function(e) {
+      e.preventDefault();
+      container.style.display = container.style.display === 'none' ? 'block' : 'none';
+      return false;
+    };
+    
+    // Add toggle button to user toolbar
+    try {
+      const userToolbar = document.querySelector('.user-toolbar');
+      if (userToolbar) {
+        userToolbar.prepend(toggleButton);
+      } else {
+        console.error("Could not find .user-toolbar to append button");
+      }
+    } catch (e) {
+      console.error("Error adding toggle button:", e);
+    }
+    
+    // Override console.log to also write to our results container
+    const originalConsoleLog = console.log;
+    console.log = function() {
+      originalConsoleLog.apply(console, arguments);
+      
+      const args = Array.from(arguments);
+      const resultsDiv = document.getElementById('synapsiens-results');
+      if (resultsDiv) {
+        const logLine = document.createElement('div');
+        logLine.style.borderBottom = '1px solid #eee';
+        logLine.style.paddingBottom = '5px';
+        logLine.style.marginBottom = '5px';
+        
+        // Format arguments properly
+        let content = '';
+        args.forEach(arg => {
+          if (typeof arg === 'object') {
+            try {
+              content += JSON.stringify(arg, null, 2) + ' ';
+            } catch (e) {
+              content += arg + ' ';
+            }
+          } else {
+            content += arg + ' ';
+          }
+        });
+        
+        logLine.textContent = content;
+        resultsDiv.appendChild(logLine);
+        
+        // Auto-scroll to bottom
+        resultsDiv.scrollTop = resultsDiv.scrollHeight;
+      }
+    };
+  }
+
+  // Initialize everything once the document is ready
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(createUI, 1000);
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(createUI, 1000);
+    });
+  }
+
+  // Also try with jQuery if available
+  if (typeof $ !== 'undefined') {
+    $(document).ready(() => {
+      setTimeout(createUI, 1000);
+    });
   }
   
-  // Run initial exploration after a delay to let page fully load
-  setTimeout(() => {
-    console.log("Running initial exploration...");
-    exploreAPIs();
-    createInspectorUI();
-    
-    // Add a test button to the page
-    const testButton = document.createElement('button');
-    testButton.textContent = 'Inspect NetSapiens';
-    testButton.style.position = 'fixed';
-    testButton.style.top = '10px';
-    testButton.style.right = '10px';
-    testButton.style.zIndex = '9999';
-    testButton.addEventListener('click', () => {
-      document.getElementById('ns-inspector').style.display = 
-        document.getElementById('ns-inspector').style.display === 'none' ? 'block' : 'none';
-    });
-    document.body.appendChild(testButton);
-  }, 2000);
+  console.log("Synapsiens SMS Integration Loaded Successfully");
 })();
