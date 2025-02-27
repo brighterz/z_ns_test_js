@@ -1,111 +1,245 @@
 
-/**
- * NetSapiens Portal Integration Test
- * This script can be loaded via the PORTAL_JS_EXTRA configuration
- */
+// NetSapiens Portal Inspector
 (function() {
-    // Prevent multiple initializations
-    if (window.synapsiensSmsTestInitialized) {
-        console.log('Synapsiens SMS test script already initialized, skipping');
-        return;
+  console.log("NetSapiens Portal Inspector loaded");
+  
+  // Basic user info we already know about
+  const userInfo = {
+    user: document.querySelector('#user-id') ? document.querySelector('#user-id').textContent.trim() : '',
+    domain: document.querySelector('.domain') ? document.querySelector('.domain').textContent.trim() : '',
+    email: document.querySelector('.email') ? document.querySelector('.email').textContent.trim() : '',
+    scope: document.querySelector('.scope') ? document.querySelector('.scope').textContent.trim() : ''
+  };
+  
+  console.log("Current User Information:", userInfo);
+  
+  // Helper to safely inspect objects
+  function safeInspect(obj, name) {
+    try {
+      if (!obj) return `${name}: Not available`;
+      
+      const props = Object.getOwnPropertyNames(obj)
+        .filter(prop => typeof obj[prop] !== 'function')
+        .reduce((acc, prop) => {
+          try {
+            acc[prop] = obj[prop];
+          } catch (e) {
+            acc[prop] = "Error accessing property";
+          }
+          return acc;
+        }, {});
+      
+      console.log(`Inspecting ${name}:`, props);
+      return props;
+    } catch (e) {
+      console.error(`Error inspecting ${name}:`, e);
+      return `Error inspecting ${name}`;
+    }
+  }
+  
+  // Create a UI element to show inspection results
+  function createInspectorUI() {
+    const inspectorDiv = document.createElement('div');
+    inspectorDiv.id = 'ns-inspector';
+    inspectorDiv.style.position = 'fixed';
+    inspectorDiv.style.bottom = '10px';
+    inspectorDiv.style.right = '10px';
+    inspectorDiv.style.backgroundColor = '#fff';
+    inspectorDiv.style.border = '1px solid #ccc';
+    inspectorDiv.style.padding = '10px';
+    inspectorDiv.style.zIndex = '9999';
+    inspectorDiv.style.maxHeight = '300px';
+    inspectorDiv.style.maxWidth = '400px';
+    inspectorDiv.style.overflow = 'auto';
+    inspectorDiv.innerHTML = `
+      <h3 style="margin-top: 0;">NetSapiens Inspector</h3>
+      <div>
+        <button id="inspect-global">Inspect Globals</button>
+        <button id="inspect-api">Inspect API</button>
+        <button id="inspect-ui">Inspect UI</button>
+        <button id="inspect-tabs">Available Tabs</button>
+      </div>
+      <div id="inspector-results" style="margin-top: 10px; font-size: 12px;"></div>
+    `;
+    document.body.appendChild(inspectorDiv);
+    
+    // Add event listeners
+    document.getElementById('inspect-global').addEventListener('click', inspectGlobals);
+    document.getElementById('inspect-api').addEventListener('click', inspectAPI);
+    document.getElementById('inspect-ui').addEventListener('click', inspectUI);
+    document.getElementById('inspect-tabs').addEventListener('click', inspectTabs);
+  }
+  
+  // Inspect global objects
+  function inspectGlobals() {
+    const results = document.getElementById('inspector-results');
+    results.innerHTML = '<h4>Inspecting Global Objects...</h4>';
+    
+    // Look for NetSapiens global objects
+    const nsObjects = {};
+    for (const key in window) {
+      if (key.includes('ns') || key.includes('NS') || key.includes('Net') || key.includes('portal')) {
+        nsObjects[key] = safeInspect(window[key], key);
+      }
     }
     
-    // Mark as initialized
-    window.synapsiensSmsTestInitialized = true;
+    results.innerHTML += `<pre>${JSON.stringify(nsObjects, null, 2)}</pre>`;
+  }
+  
+  // Inspect API endpoints
+  function inspectAPI() {
+    const results = document.getElementById('inspector-results');
+    results.innerHTML = '<h4>Inspecting API Endpoints...</h4>';
     
-    // Wait for document to be fully loaded
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", initScript);
-    } else {
-        initScript();
-    }
+    // Check for API objects or namespaces
+    const apiObjects = {};
     
-    function initScript() {
-        console.log('Synapsiens SMS test script loading...');
-        
-        // Remove any existing test containers first
-        const existingContainer = document.getElementById('synapsiens-sms-test');
-        if (existingContainer) {
-            existingContainer.remove();
-        }
-        
-        // Create test container with visible feedback
-        let testContainer = document.createElement('div');
-        testContainer.id = 'synapsiens-sms-test';
-        testContainer.style.cssText = 'padding: 15px; margin: 10px; border: 1px solid #ccc; background: #f5f5f5; position: fixed; bottom: 20px; right: 20px; z-index: 9999; max-width: 400px;';
-        
-        // Add heading
-        let heading = document.createElement('h3');
-        heading.textContent = 'Synapsiens SMS Integration Test';
-        testContainer.appendChild(heading);
-        
-        // Status display
-        let statusDiv = document.createElement('div');
-        statusDiv.textContent = 'Script loaded successfully';
-        statusDiv.style.cssText = 'padding: 5px; background-color: #e8f5e9; margin: 5px 0;';
-        testContainer.appendChild(statusDiv);
-        
-        // Add a test button with unique ID
-        let testButton = document.createElement('button');
-        testButton.id = 'synapsiens-test-button-' + Date.now(); // Add timestamp for uniqueness
-        testButton.textContent = 'Test SMS Integration';
-        testButton.style.cssText = 'padding: 8px 15px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px;';
-        
-        testButton.addEventListener('click', function() {
-            // Visual feedback
-            let feedbackDiv = document.createElement('div');
-            feedbackDiv.textContent = 'Button clicked! Testing connection...';
-            feedbackDiv.style.cssText = 'margin-top: 10px; padding: 8px; background: #e3f2fd;';
-            testContainer.appendChild(feedbackDiv);
-            
-            // Log to console for debugging
-            console.log('SMS test button clicked');
-            
-            // Get user information if available
-            try {
-                const user = document.querySelector('.username')?.textContent || 'Unknown';
-                const domain = window.location.hostname.split('.').slice(-2).join('.');
-                
-                console.log('User info:', { user, domain });
-                feedbackDiv.textContent += `\nUser: ${user}, Domain: ${domain}`;
-            } catch (error) {
-                console.error('Error getting user info:', error);
-            }
-            
-            // Simulate API call (in production this would be a real API call)
-            setTimeout(function() {
-                feedbackDiv.textContent = 'Test complete! Would connect to: http://0.0.0.0:3001/api/sms/numbers';
-                feedbackDiv.style.backgroundColor = '#e8f5e9';
-                
-                // Try to get DOM information for debugging
-                try {
-                    const domInfo = {
-                        hasMainContent: !!document.querySelector('.main-content'),
-                        hasNavButtons: !!document.querySelector('#nav-buttons'),
-                        hasUserToolbar: !!document.querySelector('.user-toolbar'),
-                        bodyClasses: document.body.className
-                    };
-                    
-                    console.log('Portal DOM structure:', domInfo);
-                    
-                    const infoText = document.createElement('pre');
-                    infoText.textContent = JSON.stringify(domInfo, null, 2);
-                    infoText.style.cssText = 'font-size: 12px; margin-top: 10px; white-space: pre-wrap;';
-                    testContainer.appendChild(infoText);
-                } catch (e) {
-                    console.error('Error getting DOM info:', e);
-                }
-            }, 1000);
-        });
-        
-        testContainer.appendChild(testButton);
-        
-        // Only append if body exists
-        if (document.body) {
-            document.body.appendChild(testContainer);
-            console.log('Synapsiens SMS test container added to page');
+    // Common API patterns to check
+    ['api', 'API', 'nsAPI', 'nsapi', 'ns-api', 'portal.api', 'NS.api'].forEach(apiName => {
+      const parts = apiName.split('.');
+      let obj = window;
+      let found = true;
+      
+      for (const part of parts) {
+        if (obj && obj[part]) {
+          obj = obj[part];
         } else {
-            console.error('Cannot find document.body to append test container');
+          found = false;
+          break;
         }
+      }
+      
+      if (found) {
+        apiObjects[apiName] = safeInspect(obj, apiName);
+      }
+    });
+    
+    // Look for XHR requests in Network tab
+    results.innerHTML += `<p>API objects found: ${Object.keys(apiObjects).length}</p>`;
+    results.innerHTML += `<pre>${JSON.stringify(apiObjects, null, 2)}</pre>`;
+    results.innerHTML += `<p>Note: Check browser Network tab for actual API calls</p>`;
+  }
+  
+  // Inspect UI components
+  function inspectUI() {
+    const results = document.getElementById('inspector-results');
+    results.innerHTML = '<h4>Inspecting UI Components...</h4>';
+    
+    // Check for common UI elements
+    const navItems = document.querySelectorAll('.nav-item, .nav-link, .menu-item');
+    const uiComponents = {
+      navItems: Array.from(navItems).map(el => ({
+        text: el.textContent.trim(),
+        id: el.id,
+        classes: el.className,
+        href: el.href || ''
+      }))
+    };
+    
+    results.innerHTML += `<pre>${JSON.stringify(uiComponents, null, 2)}</pre>`;
+  }
+  
+  // Inspect available tabs
+  function inspectTabs() {
+    const results = document.getElementById('inspector-results');
+    results.innerHTML = '<h4>Inspecting Available Tabs...</h4>';
+    
+    // Look for tab elements
+    const tabElements = document.querySelectorAll('.tab, .nav-item, [role="tab"], .tab-button');
+    const tabs = Array.from(tabElements).map(el => ({
+      text: el.textContent.trim(),
+      id: el.id,
+      classes: el.className
+    }));
+    
+    // Also check if there's a global tabs object
+    let globalTabs = null;
+    ['tabs', 'Tabs', 'nsTabs', 'portal.tabs'].forEach(tabName => {
+      const parts = tabName.split('.');
+      let obj = window;
+      let found = true;
+      
+      for (const part of parts) {
+        if (obj && obj[part]) {
+          obj = obj[part];
+          found = true;
+        } else {
+          found = false;
+          break;
+        }
+      }
+      
+      if (found) {
+        globalTabs = safeInspect(obj, tabName);
+      }
+    });
+    
+    results.innerHTML += `<h5>Tab Elements:</h5><pre>${JSON.stringify(tabs, null, 2)}</pre>`;
+    if (globalTabs) {
+      results.innerHTML += `<h5>Global Tabs Object:</h5><pre>${JSON.stringify(globalTabs, null, 2)}</pre>`;
     }
+  }
+  
+  // Add a function to explore available APIs
+  function exploreAPIs() {
+    // Looking at the structure from your screenshots
+    const apiPaths = [
+      'ns-api.authenticate',
+      'ns-api.getDialPlan',
+      'ns-api.getDialRule',
+      'ns-api.getTranscriptionIntelligence',
+      'ns-api.getTranscriptions',
+      'ns-api.postAnswerRule',
+      'ns-api.postDialRule',
+      'ns-api.saveAudio',
+      'voice-api.getLanguages',
+      'voice-api.getVoices',
+      'voice-api.synthesize'
+    ];
+    
+    console.log("Exploring API endpoints...");
+    const apiResults = {};
+    
+    apiPaths.forEach(path => {
+      const parts = path.split('.');
+      let obj = window;
+      let found = true;
+      
+      for (const part of parts) {
+        if (obj && obj[part]) {
+          obj = obj[part];
+        } else {
+          found = false;
+          break;
+        }
+      }
+      
+      if (found) {
+        apiResults[path] = typeof obj;
+        console.log(`Found API: ${path} (${typeof obj})`);
+      }
+    });
+    
+    console.log("API exploration results:", apiResults);
+  }
+  
+  // Run initial exploration after a delay to let page fully load
+  setTimeout(() => {
+    console.log("Running initial exploration...");
+    exploreAPIs();
+    createInspectorUI();
+    
+    // Add a test button to the page
+    const testButton = document.createElement('button');
+    testButton.textContent = 'Inspect NetSapiens';
+    testButton.style.position = 'fixed';
+    testButton.style.top = '10px';
+    testButton.style.right = '10px';
+    testButton.style.zIndex = '9999';
+    testButton.addEventListener('click', () => {
+      document.getElementById('ns-inspector').style.display = 
+        document.getElementById('ns-inspector').style.display === 'none' ? 'block' : 'none';
+    });
+    document.body.appendChild(testButton);
+  }, 2000);
 })();
