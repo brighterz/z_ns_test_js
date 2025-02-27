@@ -1,240 +1,488 @@
 
-// NetSapiens API Explorer
-// This script helps to explore the NetSapiens portal environment and test APIs
+$(document).ready(function() {
+  // Only run this code if we're not already on the SMS tab
+  if (window.location.pathname.indexOf('/portal/sms') === -1) {
+    // Add SMS button to main navigation if it doesn't exist
+    if ($('#nav-sms').length === 0) {
+      let smsNavButton = `
+        <li id="nav-sms" class="nav-link">
+          <a href="#" title="SMS">
+            <div class="nav-bg-image" style="background-position: 0; background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzAwYjBmMCIgZD0iTTIwLDJINEMyLjksMiAyLDIuOSAyLDRWMjJMNiwxOEgyMEMyMS4xLDE4IDIyLDE3LjEgMjIsMTZWNEMyMiwyLjkgMjEuMSwyIDIwLDJNOS41LDExQzguNywxMSA4LDEwLjMgOCw5LjVDOCw4LjcgOC43LDggOS41LDhDMTAuMyw4IDExLDguNyAxMSw5LjVDMTEsMTAuMyAxMC4zLDExIDkuNSwxMU0xNC41LDExQzEzLjcsMTEgMTMsMTAuMyAxMyw5LjVDMTMsOC43IDEzLjcsOCAxNC41LDhDMTUuMyw4IDE2LDguNyAxNiw5LjVDMTYsMTAuMyAxNS4zLDExIDE0LjUsMTFaIiAvPjwvc3ZnPg==')"></div>
+            <span class="nav-text">SMS</span>
+          </a>
+        </li>`;
+      $('#nav-buttons').append(smsNavButton);
+    }
 
-(function() {
-  // Your JWT token
-  const jwtToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJucyIsImV4cCI6MTc0MDc4NDkwOCwiaWF0IjoxNzQwNjk4NTA4LCJpc3MiOiJ2b2lwLmJyaWdodGVyLnRlbCIsImp0aSI6IjY0OTIzYWM2MjZlZmRlNjUwZDFmMTUxZTEzYWNiNGJjYjI4YzE3ODIiLCJzdWIiOiI5OTlAYnJpZ2h0ZXJ0ZWwiLCJ0aW1lX291dCI6ODY0MDAwMDAsImRvbWFpbiI6ImJyaWdodGVydGVsIiwidGVycml0b3J5IjoiYnJpZ2h0ZXJ0ZWwiLCJ1c2VyIjoiOTk5IiwidXNlcl9lbWFpbCI6InphY2tAYnJpZ2h0ZXIudGVsIiwidXNlcl9zY29wZSI6IlJlc2VsbGVyIiwiZGlzcGxheU5hbWUiOiJBUEkgVXNlciIsIm1hc2tfY2hhaW4iOm51bGwsImRlcGFydG1lbnQiOiIiLCJsb2dpbiI6Ijk5OUBicmlnaHRlcnRlbCJ9.65Y721fx0r8osBDvW1GHBXAs-4A81TgeX5rRQuDLsxo"
-  
-  // Base URL for the NetSapiens API
-  const baseApiUrl = "https://voip.brighter.tel/ns-api/v2";
-
-  // Create UI container
-  function createExplorerUI() {
-    const container = document.createElement('div');
-    container.id = 'ns-api-explorer';
-    container.style.cssText = `
-      position: fixed;
-      top: 60px;
-      right: 20px;
-      width: 500px;
-      max-height: 80vh;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 9999;
-      overflow: auto;
-      padding: 15px;
-      font-family: Arial, sans-serif;
-    `;
-
-    let html = `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h2 style="margin: 0; color: #333; font-size: 18px;">NetSapiens API Explorer</h2>
-        <button id="ns-close-explorer" style="background: none; border: none; font-size: 20px; cursor: pointer;">×</button>
-      </div>
+    // Handle click on SMS nav button
+    $(document).on('click', '#nav-sms a', function(e) {
+      e.preventDefault();
+      $("#nav-buttons li").removeClass("nav-link-current");
+      $(this).parent().addClass("nav-link-current");
+      $('.navigation-title').html("SMS");
       
-      <div style="margin-bottom: 20px;">
-        <h3 style="margin: 10px 0; font-size: 16px; color: #444;">JWT Token Information</h3>
-        <pre id="token-info" style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow: auto; font-size: 12px; max-height: 150px;"></pre>
-      </div>
-
-      <div style="margin-bottom: 20px;">
-        <h3 style="margin: 10px 0; font-size: 16px; color: #444;">Portal Environment</h3>
-        <pre id="portal-env" style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow: auto; font-size: 12px; max-height: 150px;"></pre>
-      </div>
+      // Load SMS content
+      loadSMSContent();
       
-      <div style="margin-bottom: 20px;">
-        <h3 style="margin: 10px 0; font-size: 16px; color: #444;">API Testing</h3>
-        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
-          <button class="api-test-btn" data-endpoint="/domains" style="padding: 8px 12px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer;">Test Domains API</button>
-          <button class="api-test-btn" data-endpoint="/subscribers" style="padding: 8px 12px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer;">Test Users API</button>
-          <button class="api-test-btn" data-endpoint="/sms" style="padding: 8px 12px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer;">Test SMS API</button>
+      return false;
+    });
+  }
+
+  // Function to load SMS interface content
+  function loadSMSContent() {
+    // Main SMS container
+    let smsContent = `
+      <div id="sms-content">
+        <div class="sms-header">
+          <h1 style="color: #00b0f0; font-size: 28px; margin-bottom: 20px;">SMS</h1>
         </div>
-        <div>
-          <label style="display: block; margin-bottom: 5px;">Custom API Endpoint:</label>
-          <div style="display: flex; gap: 10px;">
-            <input id="custom-endpoint" type="text" placeholder="/endpoint" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-            <button id="test-custom-endpoint" style="padding: 8px 12px; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer;">Test</button>
+        
+        <!-- Main navigation tabs -->
+        <div class="sms-nav-tabs">
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#inventory" aria-controls="inventory" role="tab" data-toggle="tab">Inventory</a></li>
+            <li role="presentation"><a href="#conversations" aria-controls="conversations" role="tab" data-toggle="tab">Conversations</a></li>
+            <li role="presentation"><a href="#history" aria-controls="history" role="tab" data-toggle="tab">History</a></li>
+            <li role="presentation"><a href="#registrations" aria-controls="registrations" role="tab" data-toggle="tab">Registrations</a></li>
+            <li role="presentation"><a href="#auto-responses" aria-controls="auto-responses" role="tab" data-toggle="tab">Auto-Responses</a></li>
+            <li role="presentation"><a href="#integrations" aria-controls="integrations" role="tab" data-toggle="tab">Integrations</a></li>
+          </ul>
+        </div>
+        
+        <!-- Tab content -->
+        <div class="tab-content">
+          <!-- Inventory Tab -->
+          <div role="tabpanel" class="tab-pane active" id="inventory">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="filters-section">
+                  <h4>Filters</h4>
+                  <div class="row">
+                    <div class="col-md-8">
+                      <!-- Filters could go here -->
+                    </div>
+                    <div class="col-md-4 text-right">
+                      <button class="btn btn-default">Export</button>
+                      <button class="btn btn-primary">Add SMS Number</button>
+                    </div>
+                  </div>
+                </div>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>SMS Number</th>
+                      <th>Treatment</th>
+                      <th>Destination</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8350</a></td>
+                      <td>User</td>
+                      <td>100</td>
+                    </tr>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8355</a></td>
+                      <td>User</td>
+                      <td>100</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Conversations Tab -->
+          <div role="tabpanel" class="tab-pane" id="conversations">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="filters-section">
+                  <h4>Filters</h4>
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="date-range-picker">
+                        <input type="text" class="form-control" value="02/26/2025 12:00 am — 02/27/2025 11:59 pm" />
+                      </div>
+                    </div>
+                    <div class="col-md-4 text-right">
+                      <button class="btn btn-default">Export</button>
+                    </div>
+                  </div>
+                </div>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Phone Number</th>
+                      <th># of Messages</th>
+                      <th>Most Recent Message</th>
+                      <th>Date/Time</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 283-0327</a></td>
+                      <td>12</td>
+                      <td>Hey, just checking in about the meeting tomorrow...</td>
+                      <td>Yesterday, 4:43 pm</td>
+                      <td><i class="fa fa-comment-o" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8355</a></td>
+                      <td>8</td>
+                      <td>Thanks for the update. I'll review it and get back...</td>
+                      <td>Yesterday, 2:32 pm</td>
+                      <td><i class="fa fa-comment-o" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8350</a></td>
+                      <td>5</td>
+                      <td>Perfect, see you then!</td>
+                      <td>Yesterday, 2:28 pm</td>
+                      <td><i class="fa fa-comment-o" aria-hidden="true"></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- History Tab -->
+          <div role="tabpanel" class="tab-pane" id="history">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="filters-section">
+                  <h4>Filters</h4>
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="date-range-picker">
+                        <input type="text" class="form-control" value="02/26/2025 12:00 am — 02/27/2025 11:59 pm" />
+                      </div>
+                    </div>
+                    <div class="col-md-4 text-right">
+                      <button class="btn btn-default">Export</button>
+                    </div>
+                  </div>
+                </div>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>From</th>
+                      <th>To</th>
+                      <th>Date</th>
+                      <th>Message</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>100</td>
+                      <td><a href="#" style="color: #00b0f0;">(479) 283-0327</a></td>
+                      <td>Today, 10:03 AM</td>
+                      <td>I'm on it</td>
+                    </tr>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 283-0327</a></td>
+                      <td>100</td>
+                      <td>Today, 10:02 AM</td>
+                      <td>I've got a problem</td>
+                    </tr>
+                    <tr>
+                      <td>100</td>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8355</a></td>
+                      <td>Today, 9:58 AM</td>
+                      <td>Please review the latest changes</td>
+                    </tr>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8355</a></td>
+                      <td>100</td>
+                      <td>Today, 9:55 AM</td>
+                      <td>Updates are ready for review</td>
+                    </tr>
+                    <tr>
+                      <td>100</td>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8350</a></td>
+                      <td>Today, 9:45 AM</td>
+                      <td>Thanks for the confirmation</td>
+                    </tr>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8350</a></td>
+                      <td>100</td>
+                      <td>Today, 9:43 AM</td>
+                      <td>Meeting confirmed for 2 PM</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Registrations Tab -->
+          <div role="tabpanel" class="tab-pane" id="registrations">
+            <!-- Subtabs for Registrations -->
+            <ul class="nav nav-tabs registration-tabs" role="tablist">
+              <li role="presentation" class="active"><a href="#brands" aria-controls="brands" role="tab" data-toggle="tab">Brands</a></li>
+              <li role="presentation"><a href="#campaigns" aria-controls="campaigns" role="tab" data-toggle="tab">Campaigns</a></li>
+              <li role="presentation"><a href="#compliance" aria-controls="compliance" role="tab" data-toggle="tab">Compliance</a></li>
+              <li role="presentation"><a href="#help" aria-controls="help" role="tab" data-toggle="tab">Help</a></li>
+            </ul>
+            
+            <!-- Subtab content -->
+            <div class="tab-content">
+              <!-- Brands Subtab -->
+              <div role="tabpanel" class="tab-pane active" id="brands">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <button class="btn btn-primary">Register Brand</button>
+                    <div class="no-data-message" style="text-align: center; padding: 50px;">
+                      <p>No brands registered yet. Click "Register Brand" to create your first brand.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Campaigns Subtab -->
+              <div role="tabpanel" class="tab-pane" id="campaigns">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <button class="btn btn-primary">Register Campaign</button>
+                    <div class="no-data-message" style="text-align: center; padding: 50px;">
+                      <p>No campaigns registered yet. Click "Register Campaign" to create your first campaign.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Compliance Subtab -->
+              <div role="tabpanel" class="tab-pane" id="compliance">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Number</th>
+                          <th>Opt-In Status</th>
+                          <th>Date</th>
+                          <th>Details</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 283-0327</a></td>
+                          <td><span style="color: green;">✓</span></td>
+                          <td>2023-05-15</td>
+                          <td><button class="btn btn-default btn-sm">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 845-8355</a></td>
+                          <td><span style="color: red;">✕</span></td>
+                          <td>2023-05-14</td>
+                          <td><button class="btn btn-default btn-sm">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 845-8350</a></td>
+                          <td><span style="color: green;">✓</span></td>
+                          <td>2023-05-13</td>
+                          <td><button class="btn btn-default btn-sm">Details</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Help Subtab -->
+              <div role="tabpanel" class="tab-pane" id="help">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <div class="help-content" style="padding: 20px;">
+                      <h4>TCR Registration Help</h4>
+                      <p>This section provides guidance on registering your brands and campaigns with the Campaign Registry (TCR).</p>
+                      
+                      <h5>Brand Registration</h5>
+                      <p>To register a brand, you'll need:</p>
+                      <ul>
+                        <li>Company name and contact information</li>
+                        <li>Website URL</li>
+                        <li>Business registration documents</li>
+                        <li>Description of your SMS use cases</li>
+                      </ul>
+                      
+                      <h5>Campaign Registration</h5>
+                      <p>To register a campaign, you'll need:</p>
+                      <ul>
+                        <li>An approved brand</li>
+                        <li>Campaign description and use case</li>
+                        <li>Sample messages</li>
+                        <li>Opt-in process documentation</li>
+                      </ul>
+                      
+                      <p>For additional assistance, contact your account representative.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Auto-Responses Tab -->
+          <div role="tabpanel" class="tab-pane" id="auto-responses">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="row">
+                  <div class="col-md-12 text-right">
+                    <button class="btn btn-primary">Add Auto-Response</button>
+                  </div>
+                </div>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Category</th>
+                      <th>Keywords</th>
+                      <th>Response</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Subscriber Opt-Out</td>
+                      <td>STOP, UNSUBSCRIBE</td>
+                      <td>You have successfully unsubscribed from "[Brand Name]". You will no longer receive messages from us. For assistance, contact [support email or phone number]. Reply START to resubscribe.</td>
+                    </tr>
+                    <tr>
+                      <td>Subscriber Opt-In</td>
+                      <td>START</td>
+                      <td>Thank you for opting in to receive messages from [Your Brand Name]. You will receive [message purpose, e.g. updates, appointment reminders, promotional offerings]. Message frequency varies. Standard message and data rates may apply. Reply HELP for help or STOP to unsubscribe.</td>
+                    </tr>
+                    <tr>
+                      <td>Help</td>
+                      <td>HELP</td>
+                      <td>For assistance with [Your Brand Name], visit [Support Website Link], email [Support Email], or call [Support Phone Number]. Reply STOP to unsubscribe.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Integrations Tab -->
+          <div role="tabpanel" class="tab-pane" id="integrations">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="integrations-content" style="padding: 20px;">
+                  <h4>Available Integrations</h4>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="integration-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                        <h5>Zapier</h5>
+                        <p>Connect your SMS system with 3,000+ apps.</p>
+                        <button class="btn btn-default">Configure</button>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="integration-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                        <h5>Microsoft Teams</h5>
+                        <p>Get SMS notifications in your Teams channels.</p>
+                        <button class="btn btn-default">Configure</button>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="integration-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                        <h5>Slack</h5>
+                        <p>Receive SMS notifications in Slack channels.</p>
+                        <button class="btn btn-default">Configure</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="integration-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                        <h5>Webhooks</h5>
+                        <p>Send SMS events to your custom endpoints.</p>
+                        <button class="btn btn-default">Configure</button>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="integration-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                        <h5>CRM Connector</h5>
+                        <p>Connect with Salesforce, HubSpot, and more.</p>
+                        <button class="btn btn-default">Configure</button>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="integration-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                        <h5>API Access</h5>
+                        <p>Get API keys for custom integrations.</p>
+                        <button class="btn btn-default">Configure</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       
-      <div>
-        <h3 style="margin: 10px 0; font-size: 16px; color: #444;">API Response</h3>
-        <div id="loading-indicator" style="display: none; text-align: center; padding: 10px;">
-          <span style="display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(0,0,0,0.1); border-radius: 50%; border-top-color: #4285f4; animation: spin 1s ease-in-out infinite;"></span>
-        </div>
-        <pre id="api-response" style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow: auto; font-size: 12px; max-height: 300px;"></pre>
+      <!-- Footer copyright -->
+      <div class="sms-footer" style="text-align: center; margin-top: 30px; color: #777; font-size: 12px;">
+        Copyright © 2008-2022 by APOLLO<br>
+        Manager Portal 45.2.2
       </div>
     `;
     
-    container.innerHTML = html;
-    document.body.appendChild(container);
+    // Inject the SMS content into the page
+    $('#content').html(smsContent);
     
-    // Add a style element for animations
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-    `;
-    document.head.appendChild(style);
-    
-    // Close button event
-    document.getElementById('ns-close-explorer').addEventListener('click', function() {
-      document.body.removeChild(container);
-    });
-    
-    // Initialize JWT token info
-    displayTokenInfo();
-    
-    // Initialize portal environment info
-    explorePortalEnvironment();
-    
-    // API test buttons
-    document.querySelectorAll('.api-test-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        const endpoint = this.getAttribute('data-endpoint');
-        testApiEndpoint(endpoint);
-      });
-    });
-    
-    // Custom endpoint test
-    document.getElementById('test-custom-endpoint').addEventListener('click', function() {
-      const endpoint = document.getElementById('custom-endpoint').value;
-      if (endpoint) {
-        testApiEndpoint(endpoint);
-      } else {
-        setApiResponse('Please enter an endpoint path');
-      }
-    });
-  }
-  
-  // Display decoded JWT token info
-  function displayTokenInfo() {
-    try {
-      const tokenInfo = parseJwt(jwtToken);
-      document.getElementById('token-info').textContent = JSON.stringify(tokenInfo, null, 2);
-    } catch (e) {
-      document.getElementById('token-info').textContent = 'Error parsing JWT token: ' + e.message;
-    }
-  }
-  
-  // Parse JWT token
-  function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-  }
-  
-  // Explore NetSapiens portal environment
-  function explorePortalEnvironment() {
-    const portalEnvElement = document.getElementById('portal-env');
-    
-    // Check for global objects and variables
-    const environment = {
-      window: {
-        NS: typeof window.NS !== 'undefined' ? 'Available' : 'Not available',
-        $: typeof window.$ !== 'undefined' ? 'jQuery available' : 'jQuery not available',
-        jQuery: typeof window.jQuery !== 'undefined' ? 'jQuery available' : 'jQuery not available',
-        angular: typeof window.angular !== 'undefined' ? 'Angular available' : 'Angular not available',
-        React: typeof window.React !== 'undefined' ? 'React available' : 'React not available',
-        Vue: typeof window.Vue !== 'undefined' ? 'Vue available' : 'Vue not available',
-        apiEndpoints: typeof window.apiEndpoints !== 'undefined' ? window.apiEndpoints : 'Not available',
-        user: typeof window.user !== 'undefined' ? window.user : 'Not available',
-        domain: typeof window.domain !== 'undefined' ? window.domain : 'Not available',
-        config: typeof window.config !== 'undefined' ? window.config : 'Not available',
-        portalVersion: typeof window.portalVersion !== 'undefined' ? window.portalVersion : 'Not available'
-      },
-      document: {},
-      navigator: {},
-      location: {
-        href: window.location.href,
-        host: window.location.host,
-        pathname: window.location.pathname,
-        search: window.location.search,
-        hash: window.location.hash
-      },
-      localStorage: {},
-      sessionStorage: {},
-      custom: {}
-    };
-    
-    // Check for form elements
-    const hiddenInputs = {};
-    document.querySelectorAll('input[type="hidden"]').forEach(input => {
-      hiddenInputs[input.name] = input.value;
-    });
-    environment.hiddenInputs = hiddenInputs;
-    
-    // Display environment info
-    portalEnvElement.textContent = JSON.stringify(environment, null, 2);
-  }
-  
-  // Test API endpoint
-  function testApiEndpoint(endpoint) {
-    const apiResponseElement = document.getElementById('api-response');
-    const loadingIndicator = document.getElementById('loading-indicator');
-    
-    // Show loading indicator
-    loadingIndicator.style.display = 'block';
-    apiResponseElement.textContent = `Testing ${endpoint} (${baseApiUrl}${endpoint})...`;
-    
-    // Ensure endpoint starts with a slash
-    if (!endpoint.startsWith('/')) {
-      endpoint = '/' + endpoint;
-    }
-    
-    // Make API request
-    fetch(`${baseApiUrl}${endpoint}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${jwtToken}`,
-        'Accept': 'application/json'
-      }
-    })
-    .then(response => {
-      loadingIndicator.style.display = 'none';
-      
-      const statusMessage = `Status: ${response.status} ${response.statusText}`;
-      apiResponseElement.textContent = statusMessage + '\n\nLoading response...';
-      
-      // Try to parse as JSON
-      return response.text().then(text => {
-        try {
-          // First try to parse as JSON
-          const data = JSON.parse(text);
-          return { statusMessage, data };
-        } catch (e) {
-          // If not JSON, return as text
-          return { statusMessage, data: text };
+    // Apply some additional styles to match NetSapiens Portal
+    let customStyles = `
+      <style>
+        #sms-content {
+          font-family: Arial, sans-serif;
         }
+        .sms-nav-tabs {
+          margin-bottom: 20px;
+        }
+        .nav-tabs > li > a {
+          color: #555;
+        }
+        .nav-tabs > li.active > a, 
+        .nav-tabs > li.active > a:hover, 
+        .nav-tabs > li.active > a:focus {
+          color: #00b0f0;
+          font-weight: 500;
+        }
+        .filters-section {
+          margin-bottom: 20px;
+          padding: 10px 0;
+        }
+        .btn-primary {
+          background-color: #00b0f0;
+          border-color: #0099d3;
+        }
+        .btn-primary:hover {
+          background-color: #0099d3;
+          border-color: #0083b7;
+        }
+        .registration-tabs {
+          margin-top: 15px;
+          margin-bottom: 20px;
+        }
+        .date-range-picker {
+          max-width: 350px;
+        }
+        table.table thead th {
+          background-color: #f9f9f9;
+          border-bottom: 2px solid #ddd;
+        }
+      </style>
+    `;
+    $('head').append(customStyles);
+    
+    // Initialize Bootstrap tabs
+    if ($.fn.tab) {
+      $('.nav-tabs a').click(function(e) {
+        e.preventDefault();
+        $(this).tab('show');
       });
-    })
-    .then(({ statusMessage, data }) => {
-      if (typeof data === 'object') {
-        apiResponseElement.textContent = statusMessage + '\n\n' + JSON.stringify(data, null, 2);
-      } else {
-        apiResponseElement.textContent = statusMessage + '\n\n' + data;
-      }
-    })
-    .catch(error => {
-      loadingIndicator.style.display = 'none';
-      apiResponseElement.textContent = `Error: ${error.message}`;
-    });
+    }
   }
-  
-  // Set API response text
-  function setApiResponse(text) {
-    document.getElementById('api-response').textContent = text;
-  }
-
-  // Initialize the explorer
-  createExplorerUI();
-})();
-
+});
