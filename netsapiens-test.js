@@ -1,19 +1,19 @@
 
 $(document).ready(function() {
   // Only run this code if we're not already on the SMS tab
-        const existingButton = $('#nav-callhistory');
-        
-        if (existingButton) {
-            const newButton = 
-                '<li id="nav-test" class="">' +
-                '<a href="#" class="nav-link">' +
-                '<div class="nav-button btn"></div>' +
-                '<div class="nav-bg-image"></div>' +
-                '<span class="nav-text">Test</span>' +
-                '<div class="nav-arrow"></div>' +
-                '</a>' +
-                '</li>';
-existingButton.after(newButton);
+  if (window.location.pathname.indexOf('/portal/sms') === -1) {
+    // Add SMS button to main navigation if it doesn't exist
+    if ($('#nav-sms').length === 0) {
+      let smsNavButton = `
+        <li id="nav-sms" class="nav-link">
+          <a href="#" title="SMS">
+            <div class="nav-bg-image" style="background-position: 0; background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzAwYjBmMCIgZD0iTTIwLDJINEMyLjksMiAyLDIuOSAyLDRWMjJMNiwxOEgyMEMyMS4xLDE4IDIyLDE3LjEgMjIsMTZWNEMyMiwyLjkgMjEuMSwyIDIwLDJNOS41LDExQzguNywxMSA4LDEwLjMgOCw5LjVDOCw4LjcgOC43LDggOS41LDhDMTAuMyw4IDExLDguNyAxMSw5LjVDMTEsMTAuMyAxMC4zLDExIDkuNSwxMU0xNC41LDExQzEzLjcsMTEgMTMsMTAuMyAxMyw5LjVDMTMsOC43IDEzLjcsOCAxNC41LDhDMTUuMyw4IDE2LDguNyAxNiw5LjVDMTYsMTAuMyAxNS4zLDExIDE0LjUsMTFaIiAvPjwvc3ZnPg==')"></div>
+            <span class="nav-text">SMS</span>
+          </a>
+        </li>`;
+      $('#nav-buttons').append(smsNavButton);
+    }
+
     // Handle click on SMS nav button
     $(document).on('click', '#nav-sms a', function(e) {
       e.preventDefault();
