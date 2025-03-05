@@ -54,7 +54,7 @@ $(document).ready(function() {
                   <div class="col-md-6">
                     <div class="integration-card-container" style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 20px; padding: 15px;">
                       <div class="integration-card-logo-container" style="text-align: center; margin-bottom: 15px;">
-                        <img class="integration-card-logo" src="https://www.make.com/logos/make-logo-text-rgb.svg" alt="Make.com" style="max-height: 50px;">
+                        <img class="integration-card-logo" src="https://www.make.com/_nuxt/img/make-logo.c28a906.svg" alt="Make.com" style="max-height: 50px;">
                       </div>
                       <div class="integration-card-title-container" style="text-align: center;">
                         <h4 class="integration-card-title">Make.com</h4>
@@ -68,6 +68,30 @@ $(document).ready(function() {
                     </div>
                   </div>
                 </div>
+              </div>
+              <div class="modal-footer-iotum-status">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+      
+      // Add modal for Opt-In details
+      $('body').append(`
+        <div class="modal fade modal-iotum-status" id="optInDetailsModal" tabindex="-1" role="dialog" aria-labelledby="optInDetailsModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header-iotum-status">
+                <h3 class="modal-title" id="optInDetailsModalLabel">
+                  Opt-In Details
+                </h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body-iotum-status">
+                <div id="optInDetailsContent"></div>
               </div>
               <div class="modal-footer-iotum-status">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -113,6 +137,13 @@ $(document).ready(function() {
     });
   }
 
+  // Show opt-in details when a details button is clicked
+  $(document).on('click', '.show-details-btn', function() {
+    const detailsContent = $(this).data('details');
+    $('#optInDetailsContent').html(detailsContent);
+    $('#optInDetailsModal').modal('show');
+  });
+
   // Function to load SMS interface content
   function loadSMSContent() {
     // Main SMS container
@@ -128,9 +159,8 @@ $(document).ready(function() {
             <li role="presentation" class="active"><a href="#inventory" aria-controls="inventory" role="tab" data-toggle="tab">Inventory</a></li>
             <li role="presentation"><a href="#conversations" aria-controls="conversations" role="tab" data-toggle="tab">Conversations</a></li>
             <li role="presentation"><a href="#history" aria-controls="history" role="tab" data-toggle="tab">History</a></li>
-            <li role="presentation"><a href="#registrations" aria-controls="registrations" role="tab" data-toggle="tab">Registrations</a></li>
+            <li role="presentation"><a href="#compliance" aria-controls="compliance" role="tab" data-toggle="tab">Compliance</a></li>
             <li role="presentation"><a href="#auto-responses" aria-controls="auto-responses" role="tab" data-toggle="tab">Auto-Responses</a></li>
-            <li role="presentation"><a href="#integrations" aria-controls="integrations" role="tab" data-toggle="tab">Integrations</a></li>
           </ul>
         </div>
         
@@ -186,7 +216,7 @@ $(document).ready(function() {
                   <div class="row">
                     <div class="col-md-8">
                       <div class="date-range-picker">
-                        <input type="text" class="form-control" value="02/26/2025 12:00 am — 02/27/2025 11:59 pm" />
+                        <input type="text" class="form-control" value="02/26/2025 12:00 am — 03/05/2025 11:59 pm" />
                       </div>
                     </div>
                     <div class="col-md-4 text-right">
@@ -241,7 +271,7 @@ $(document).ready(function() {
                   <div class="row">
                     <div class="col-md-8">
                       <div class="date-range-picker">
-                        <input type="text" class="form-control" value="02/26/2025 12:00 am — 02/27/2025 11:59 pm" />
+                        <input type="text" class="form-control" value="02/26/2025 12:00 am — 03/05/2025 11:59 pm" />
                       </div>
                     </div>
                     <div class="col-md-4 text-right">
@@ -301,25 +331,162 @@ $(document).ready(function() {
             </div>
           </div>
           
-          <!-- Registrations Tab -->
-          <div role="tabpanel" class="tab-pane" id="registrations">
-            <!-- Subtabs for Registrations -->
+          <!-- Compliance Tab (formerly Registrations) -->
+          <div role="tabpanel" class="tab-pane" id="compliance">
+            <!-- Subtabs for Compliance -->
             <ul class="nav nav-tabs registration-tabs" role="tablist">
-              <li role="presentation" class="active"><a href="#brands" aria-controls="brands" role="tab" data-toggle="tab">Brands</a></li>
+              <li role="presentation" class="active"><a href="#opt-ins" aria-controls="opt-ins" role="tab" data-toggle="tab">Opt-Ins</a></li>
+              <li role="presentation"><a href="#brands" aria-controls="brands" role="tab" data-toggle="tab">Brands</a></li>
               <li role="presentation"><a href="#campaigns" aria-controls="campaigns" role="tab" data-toggle="tab">Campaigns</a></li>
-              <li role="presentation"><a href="#compliance" aria-controls="compliance" role="tab" data-toggle="tab">Compliance</a></li>
               <li role="presentation"><a href="#help" aria-controls="help" role="tab" data-toggle="tab">Help</a></li>
             </ul>
             
             <!-- Subtab content -->
             <div class="tab-content">
+              <!-- Opt-Ins Subtab (New) -->
+              <div role="tabpanel" class="tab-pane active" id="opt-ins">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <div class="filters-section">
+                      <h4>Filters</h4>
+                      <div class="row">
+                        <div class="col-md-8">
+                          <div class="date-range-picker">
+                            <input type="text" class="form-control" value="02/05/2025 12:00 am — 03/05/2025 11:59 pm" />
+                          </div>
+                        </div>
+                        <div class="col-md-4 text-right">
+                          <button class="btn btn-default">Export</button>
+                        </div>
+                      </div>
+                    </div>
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th>Number</th>
+                          <th>Opt-In Status</th>
+                          <th>Date</th>
+                          <th>Details</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 283-0327</a></td>
+                          <td><span style="color: green;">✓</span> Yes</td>
+                          <td>03/05/2025</td>
+                          <td><button class="btn btn-default btn-sm show-details-btn" data-details="<p><strong>Opt-In received via web widget</strong></p><p>Customer accepted terms and conditions via the website opt-in form.</p>">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 845-8355</a></td>
+                          <td><span style="color: green;">✓</span> Yes</td>
+                          <td>03/04/2025</td>
+                          <td><button class="btn btn-default btn-sm show-details-btn" data-details="<p><strong>Opt-In received by START message sent</strong></p><p>Customer sent START to 479-845-8355 at 2:34 PM.</p>">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 845-8350</a></td>
+                          <td><span style="color: red;">✕</span> No</td>
+                          <td>03/03/2025</td>
+                          <td><button class="btn btn-default btn-sm show-details-btn" data-details="<p><strong>Opt-Out received by STOP message sent</strong></p><p>Customer sent STOP to 479-845-8350 at 11:22 AM.</p>">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 283-0328</a></td>
+                          <td><span style="color: green;">✓</span> Yes</td>
+                          <td>03/02/2025</td>
+                          <td><button class="btn btn-default btn-sm show-details-btn" data-details="<p><strong>Opt-In received by customer service agent</strong></p><p>Verbal consent provided during support call #CS-3824.</p>">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 845-9355</a></td>
+                          <td><span style="color: green;">✓</span> Yes</td>
+                          <td>03/01/2025</td>
+                          <td><button class="btn btn-default btn-sm show-details-btn" data-details="<p><strong>Opt-In received via web widget</strong></p><p>Customer accepted terms and conditions via the website opt-in form.</p>">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 845-9350</a></td>
+                          <td><span style="color: green;">✓</span> Yes</td>
+                          <td>02/28/2025</td>
+                          <td><button class="btn btn-default btn-sm show-details-btn" data-details="<p><strong>Opt-In received by START message sent</strong></p><p>Customer sent START to 479-845-9350 at 9:15 AM.</p>">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 284-1327</a></td>
+                          <td><span style="color: red;">✕</span> No</td>
+                          <td>02/25/2025</td>
+                          <td><button class="btn btn-default btn-sm show-details-btn" data-details="<p><strong>Opt-Out received by STOP message sent</strong></p><p>Customer sent STOP to 479-284-1327 at 3:47 PM.</p>">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 845-7355</a></td>
+                          <td><span style="color: green;">✓</span> Yes</td>
+                          <td>02/20/2025</td>
+                          <td><button class="btn btn-default btn-sm show-details-btn" data-details="<p><strong>Opt-In received at point of sale</strong></p><p>Customer provided opt-in during account creation in-store.</p>">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 845-7350</a></td>
+                          <td><span style="color: green;">✓</span> Yes</td>
+                          <td>02/15/2025</td>
+                          <td><button class="btn btn-default btn-sm show-details-btn" data-details="<p><strong>Opt-In received by START message sent</strong></p><p>Customer sent START to 479-845-7350 at 1:12 PM.</p>">Details</button></td>
+                        </tr>
+                        <tr>
+                          <td><a href="#" style="color: #00b0f0;">(479) 284-2327</a></td>
+                          <td><span style="color: red;">✕</span> No</td>
+                          <td>02/10/2025</td>
+                          <td><button class="btn btn-default btn-sm show-details-btn" data-details="<p><strong>Opt-Out received by STOP message sent</strong></p><p>Customer sent STOP to 479-284-2327 at 5:33 PM.</p>">Details</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              
               <!-- Brands Subtab -->
-              <div role="tabpanel" class="tab-pane active" id="brands">
+              <div role="tabpanel" class="tab-pane" id="brands">
                 <div class="panel panel-default">
                   <div class="panel-body">
                     <button class="btn btn-primary">Register Brand</button>
                     <div class="no-data-message" style="text-align: center; padding: 50px;">
                       <p>No brands registered yet. Click "Register Brand" to create your first brand.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Campaigns Subtab -->
+              <div role="tabpanel" class="tab-pane" id="campaigns">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <button class="btn btn-primary">Register Campaign</button>
+                    <div class="no-data-message" style="text-align: center; padding: 50px;">
+                      <p>No campaigns registered yet. Click "Register Campaign" to create your first campaign.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Help Subtab -->
+              <div role="tabpanel" class="tab-pane" id="help">
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    <div class="help-content" style="padding: 20px;">
+                      <h4>TCR Registration Help</h4>
+                      <p>This section provides guidance on registering your brands and campaigns with the Campaign Registry (TCR).</p>
+                      
+                      <h5>Brand Registration</h5>
+                      <p>To register a brand, you'll need:</p>
+                      <ul>
+                        <li>Company name and contact information</li>
+                        <li>Website URL</li>
+                        <li>Business registration documents</li>
+                        <li>Description of your SMS use cases</li>
+                      </ul>
+                      
+                      <h5>Campaign Registration</h5>
+                      <p>To register a campaign, you'll need:</p>
+                      <ul>
+                        <li>An approved brand</li>
+                        <li>Campaign description and use case</li>
+                        <li>Sample messages</li>
+                        <li>Opt-in process documentation</li>
+                      </ul>
+                      
+                      <p>For additional assistance, contact your account representative.</p>
                     </div>
                   </div>
                 </div>
@@ -362,33 +529,6 @@ $(document).ready(function() {
                     </tr>
                   </tbody>
                 </table>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Integrations Tab -->
-          <div role="tabpanel" class="tab-pane" id="integrations">
-            <div class="panel panel-default">
-              <div class="panel-body">
-                <div class="integrations-content" style="padding: 20px;">
-                  <h4>Available Integrations</h4>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <div class="integration-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-                        <h5>Zapier</h5>
-                        <p>Connect your SMS system with 3,000+ apps.</p>
-                        <button class="btn btn-default">Configure</button>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="integration-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-                        <h5>Make.com</h5>
-                        <p>Build automated workflows with your SMS platform.</p>
-                        <button class="btn btn-default">Configure</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
