@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
   // Only run this code if we're not already on the SMS tab
   if (window.location.pathname.indexOf('/portal/sms') === -1) {
@@ -8,12 +7,24 @@ $(document).ready(function() {
         <li id="nav-sms" class="nav-link">
           <a href="#" title="SMS">
             <div class="nav-button btn"></div>
-            <div class="nav-bg-image"></div>
+            <div class="nav-bg-image" style="background-position: -40px 0;"></div>
             <span class="nav-text">SMS</span>
             <div class="nav-arrow"></div>
           </a>
         </li>`;
       $('#nav-buttons').append(smsNavButton);
+      
+      // Add CSS to fix arrow direction
+      const smsNavStyles = `
+        <style>
+          #nav-sms.nav-link-current .nav-arrow {
+            bottom: -8px !important;
+            top: auto !important;
+            border-top: 8px solid #396AB1 !important;
+            border-bottom: 0 !important;
+          }
+        </style>`;
+      $('head').append(smsNavStyles);
     }
 
     // Handle click on SMS nav button
