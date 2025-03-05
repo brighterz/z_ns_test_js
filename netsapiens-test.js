@@ -3,35 +3,9 @@ $(document).ready(function() {
   if (window.location.pathname.indexOf('/portal/sms') === -1) {
     // Add SMS button to main navigation if it doesn't exist
     if ($('#nav-sms').length === 0) {
-      // First add the CSS for the nav arrow and button styling
-      const smsNavStyles = `
-        <style>
-          #nav-sms.nav-link-current .nav-arrow {
-            position: absolute;
-            left: 50%;
-            bottom: -8px;
-            margin-left: -8px;
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 8px solid #396AB1;
-          }
-          
-          #nav-sms .nav-arrow {
-            display: none;
-          }
-          
-          #nav-sms.nav-link-current .nav-arrow {
-            display: block;
-          }
-        </style>`;
-      $('head').append(smsNavStyles);
-      
-      // Add the SMS nav button
       let smsNavButton = `
-        <li id="nav-sms" class="nav-link">
-          <a href="#" title="SMS">
+        <li id="nav-sms" class="">
+          <a href="#" class="nav-link" id="LinkSMSIndex">
             <div class="nav-button btn"></div>
             <div class="nav-bg-image" style="background-position: -75px 0;"></div>
             <span class="nav-text">SMS</span>
@@ -44,8 +18,12 @@ $(document).ready(function() {
     // Handle click on SMS nav button
     $(document).on('click', '#nav-sms a', function(e) {
       e.preventDefault();
+      
+      // Remove current class from all nav buttons and add to SMS
       $("#nav-buttons li").removeClass("nav-link-current");
       $(this).parent().addClass("nav-link-current");
+      
+      // Update the navigation title
       $('.navigation-title').html("SMS");
       
       // Load SMS content
