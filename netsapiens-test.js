@@ -7,8 +7,10 @@ $(document).ready(function() {
       let smsNavButton = `
         <li id="nav-sms" class="nav-link">
           <a href="#" title="SMS">
-            <div class="nav-bg-image" style="background-position: 0; background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzAwYjBmMCIgZD0iTTIwLDJINEMyLjksMiAyLDIuOSAyLDRWMjJMNiwxOEgyMEMyMS4xLDE4IDIyLDE3LjEgMjIsMTZWNEMyMiwyLjkgMjEuMSwyIDIwLDJNOS41LDExQzguNywxMSA4LDEwLjMgOCw5LjVDOCw4LjcgOC43LDggOS41LDhDMTAuMyw4IDExLDguNyAxMSw5LjVDMTEsMTAuMyAxMC4zLDExIDkuNSwxMU0xNC41LDExQzEzLjcsMTEgMTMsMTAuMyAxMyw5LjVDMTMsOC43IDEzLjcsOCAxNC41LDhDMTUuMyw4IDE2LDguNyAxNiw5LjVDMTYsMTAuMyAxNS4zLDExIDE0LjUsMTFaIiAvPjwvc3ZnPg==')"></div>
+            <div class="nav-button btn"></div>
+            <div class="nav-bg-image"></div>
             <span class="nav-text">SMS</span>
+            <div class="nav-arrow"></div>
           </a>
         </li>`;
       $('#nav-buttons').append(smsNavButton);
