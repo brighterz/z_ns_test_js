@@ -54,7 +54,7 @@ $(document).ready(function() {
                   <div class="col-md-6">
                     <div class="integration-card-container" style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 20px; padding: 15px;">
                       <div class="integration-card-logo-container" style="text-align: center; margin-bottom: 15px;">
-                        <img class="integration-card-logo" src="https://www.make.com/_nuxt/img/make-logo.c28a906.svg" alt="Make.com" style="max-height: 50px;">
+                        <img class="integration-card-logo" src="https://www.make.com/logos/make-logo-text-rgb.svg" alt="Make.com" style="max-height: 50px;">
                       </div>
                       <div class="integration-card-title-container" style="text-align: center;">
                         <h4 class="integration-card-title">Make.com</h4>
