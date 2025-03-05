@@ -47,7 +47,7 @@ $(document).ready(function() {
                         <p>Connect your SMS platform with 5000+ apps without any code.</p>
                       </div>
                       <div class="integration-card-status" style="text-align: center; margin-top: 15px;">
-                        <button class="btn btn-primary">Connect</button>
+                        <a href="https://zapier.com" target="_blank" class="btn btn-primary">Connect</a>
                       </div>
                     </div>
                   </div>
@@ -63,7 +63,7 @@ $(document).ready(function() {
                         <p>Build automated workflows with your SMS messaging system.</p>
                       </div>
                       <div class="integration-card-status" style="text-align: center; margin-top: 15px;">
-                        <button class="btn btn-primary">Connect</button>
+                        <a href="https://make.com" target="_blank" class="btn btn-primary">Connect</a>
                       </div>
                     </div>
                   </div>
