@@ -1,5 +1,86 @@
 $(document).ready(function() {
-  // Only run this code if we're not already on the SMS tab
+  // Add Integrations button to header if it doesn't exist
+  if ($('#integrations-toolbar').length === 0) {
+    // Find the user toolbar to insert our integrations button
+    const userToolbar = $('.user-toolbar');
+    if (userToolbar.length) {
+      // Create and insert the integrations toolbar button
+      const integrationsButton = `
+        <li id="integrations-toolbar">
+          <i class="icon icon-th" style="margin-right: 4px;"></i>
+          <a class="header-link" role="button" tabindex="-1" style="outline: none;">
+            Integrations
+          </a>
+        </li>`;
+      userToolbar.prepend(integrationsButton);
+      
+      // Add click handler for the integrations button
+      $('#integrations-toolbar').click(function(e) {
+        e.preventDefault();
+        showIntegrationsModal();
+      });
+      
+      // Add the integrations modal HTML to the page
+      $('body').append(`
+        <div id="integrations-component" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="integrationsModal" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Integrations</h4>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="integration-card-container" style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 20px; padding: 15px;">
+                      <div class="integration-card-logo-container" style="text-align: center; margin-bottom: 15px;">
+                        <img class="integration-card-logo" src="https://cdn.zapier.com/zapier/images/logos/zapier-logo.png" alt="Zapier" style="max-height: 50px;">
+                      </div>
+                      <div class="integration-card-title-container" style="text-align: center;">
+                        <h4 class="integration-card-title">Zapier</h4>
+                      </div>
+                      <div class="integration-card-description" style="text-align: center; margin: 10px 0;">
+                        <p>Connect your SMS platform with 5000+ apps without any code.</p>
+                      </div>
+                      <div class="integration-card-status" style="text-align: center; margin-top: 15px;">
+                        <button class="btn btn-primary">Connect</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="integration-card-container" style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 20px; padding: 15px;">
+                      <div class="integration-card-logo-container" style="text-align: center; margin-bottom: 15px;">
+                        <img class="integration-card-logo" src="https://www.make.com/_nuxt/img/make-logo.c28a906.svg" alt="Make.com" style="max-height: 50px;">
+                      </div>
+                      <div class="integration-card-title-container" style="text-align: center;">
+                        <h4 class="integration-card-title">Make.com</h4>
+                      </div>
+                      <div class="integration-card-description" style="text-align: center; margin: 10px 0;">
+                        <p>Build automated workflows with your SMS messaging system.</p>
+                      </div>
+                      <div class="integration-card-status" style="text-align: center; margin-top: 15px;">
+                        <button class="btn btn-primary">Connect</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+    }
+  }
+  
+  // Function to show the integrations modal
+  function showIntegrationsModal() {
+    $('#integrations-component').modal('show');
+  }
+
+  // Only run SMS tab code if we're not already on the SMS tab
   if (window.location.pathname.indexOf('/portal/sms') === -1) {
     // Add SMS button to main navigation if it doesn't exist
     if ($('#nav-sms').length === 0) {
@@ -244,8 +325,6 @@ $(document).ready(function() {
                   </div>
                 </div>
               </div>
-              
-              <!-- Other tabs content omitted for brevity -->
             </div>
           </div>
           
@@ -292,7 +371,25 @@ $(document).ready(function() {
           <div role="tabpanel" class="tab-pane" id="integrations">
             <div class="panel panel-default">
               <div class="panel-body">
-                <!-- Integrations content omitted for brevity -->
+                <div class="integrations-content" style="padding: 20px;">
+                  <h4>Available Integrations</h4>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="integration-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                        <h5>Zapier</h5>
+                        <p>Connect your SMS system with 3,000+ apps.</p>
+                        <button class="btn btn-default">Configure</button>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="integration-card" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+                        <h5>Make.com</h5>
+                        <p>Build automated workflows with your SMS platform.</p>
+                        <button class="btn btn-default">Configure</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
