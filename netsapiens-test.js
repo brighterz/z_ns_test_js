@@ -17,19 +17,23 @@ $(document).ready(function() {
       // Add click handler for the integrations button
       $('#integrations-toolbar').click(function(e) {
         e.preventDefault();
-        showIntegrationsModal();
+        $('#integrationsModal').modal('show');
       });
       
-      // Add the integrations modal HTML to the page
+      // Add the integrations modal HTML to the page (using the correct modal structure)
       $('body').append(`
-        <div id="integrations-component" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="integrationsModal" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
+        <div class="modal fade modal-iotum-status" id="integrationsModal" tabindex="-1" role="dialog" aria-labelledby="integrationsModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Integrations</h4>
+              <div class="modal-header-iotum-status">
+                <h3 class="modal-title" id="integrationsModalLabel">
+                  Available Integrations
+                </h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
-              <div class="modal-body">
+              <div class="modal-body-iotum-status">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="integration-card-container" style="border: 1px solid #ddd; border-radius: 5px; margin-bottom: 20px; padding: 15px;">
@@ -65,7 +69,7 @@ $(document).ready(function() {
                   </div>
                 </div>
               </div>
-              <div class="modal-footer">
+              <div class="modal-footer-iotum-status">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
               </div>
             </div>
@@ -73,11 +77,6 @@ $(document).ready(function() {
         </div>
       `);
     }
-  }
-  
-  // Function to show the integrations modal
-  function showIntegrationsModal() {
-    $('#integrations-component').modal('show');
   }
 
   // Only run SMS tab code if we're not already on the SMS tab
