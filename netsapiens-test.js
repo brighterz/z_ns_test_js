@@ -100,248 +100,6 @@ $(document).ready(function() {
           </div>
         </div>
       `);
-      
-      // Add modal for Brand Registration
-      $('body').append(`
-        <div class="modal fade modal-iotum-status" id="brandRegistrationModal" tabindex="-1" role="dialog" aria-labelledby="brandRegistrationModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header-iotum-status">
-                <h3 class="modal-title" id="brandRegistrationModalLabel">
-                  Register Brand
-                </h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body-iotum-status">
-                <!-- Warning banner -->
-                <div class="alert alert-warning">
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                  Changes made in this integration may result in billable charges. Please contact your service provider for more information.
-                </div>
-                
-                <!-- Step indicator -->
-                <div class="step-indicator" style="margin-bottom: 20px; text-align: center;">
-                  <span id="step1-indicator" class="badge" style="background-color: #00b0f0; color: white; margin-right: 10px;">Step 1</span>
-                  <span id="step2-indicator" class="badge" style="background-color: #ccc; color: white;">Step 2</span>
-                </div>
-                
-                <!-- Step 1 Form -->
-                <div id="brand-registration-step1">
-                  <form id="brand-registration-form-step1">
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="firstName">First Name</label>
-                          <input type="text" class="form-control" id="firstName" required>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="lastName">Last Name</label>
-                          <input type="text" class="form-control" id="lastName" required>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="email">Email <i class="fa fa-info-circle" data-toggle="tooltip" title="Business email address"></i></label>
-                          <input type="email" class="form-control" id="email" required>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="phone">Phone Number</label>
-                          <input type="tel" class="form-control" id="phone" placeholder="+00000000000" required>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="address">Address / Street</label>
-                          <input type="text" class="form-control" id="address" required>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="city">City</label>
-                          <input type="text" class="form-control" id="city" required>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="state">State / Region</label>
-                          <input type="text" class="form-control" id="state" required>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="zipCode">Postal Code/ZIP Code</label>
-                          <input type="text" class="form-control" id="zipCode" placeholder="00000-0000" required>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="website">Website</label>
-                          <input type="url" class="form-control" id="website">
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="domain">Domain *</label>
-                          <div class="domain-autocomplete-container">
-                            <input type="text" class="form-control" id="domain" placeholder="Enter a domain name" required>
-                            <div id="domain-suggestions" class="domain-suggestions" style="display: none; position: absolute; width: 100%; z-index: 1000; background: white; border: 1px solid #ccc; max-height: 150px; overflow-y: auto;"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="stockExchange">Stock Exchange</label>
-                          <select class="form-control" id="stockExchange">
-                            <option value="">-- select an option --</option>
-                            <option value="NYSE">NYSE</option>
-                            <option value="NASDAQ">NASDAQ</option>
-                            <option value="LSE">LSE</option>
-                            <option value="TSX">TSX</option>
-                            <option value="Other">Other</option>
-                            <option value="N/A">N/A</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label for="stockSymbol">Stock Symbol</label>
-                          <input type="text" class="form-control" id="stockSymbol">
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-                
-                <!-- Step 2 Form (hidden initially) -->
-                <div id="brand-registration-step2" style="display: none;">
-                  <form id="brand-registration-form-step2">
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label for="brandName">Brand Name *</label>
-                          <input type="text" class="form-control" id="brandName" required>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label for="brandDescription">Brand Description *</label>
-                          <textarea class="form-control" id="brandDescription" rows="3" required></textarea>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label for="brandCategory">Brand Category *</label>
-                          <select class="form-control" id="brandCategory" required>
-                            <option value="">-- select a category --</option>
-                            <option value="Finance">Finance</option>
-                            <option value="Healthcare">Healthcare</option>
-                            <option value="Insurance">Insurance</option>
-                            <option value="Retail">Retail</option>
-                            <option value="Technology">Technology</option>
-                            <option value="Telecommunications">Telecommunications</option>
-                            <option value="Travel">Travel</option>
-                            <option value="Other">Other</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label>Brand Logo (Optional)</label>
-                          <div class="input-group">
-                            <input type="text" class="form-control" readonly placeholder="No file selected">
-                            <span class="input-group-btn">
-                              <button class="btn btn-default" type="button">Browse...</button>
-                            </span>
-                          </div>
-                          <p class="help-block">Max file size: 2MB. Supported formats: JPG, PNG</p>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="form-group">
-                          <label for="termsAgreement">Terms and Conditions</label>
-                          <div class="checkbox">
-                            <label>
-                              <input type="checkbox" id="termsAgreement" required> I agree to the <a href="#" data-toggle="modal" data-target="#termsModal">Terms and Conditions</a> for brand registration
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                </div>
-              </div>
-              <div class="modal-footer-iotum-status">
-                <button type="button" class="btn btn-default" id="prevStep" style="display: none;">Previous</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="nextStep">Next</button>
-                <button type="button" class="btn btn-primary" id="submitRegistration" style="display: none;">Submit</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `);
-      
-      // Add terms and conditions modal
-      $('body').append(`
-        <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="termsModalLabel">Terms and Conditions</h4>
-              </div>
-              <div class="modal-body">
-                <p>By registering your brand with the Campaign Registry, you agree to the following terms:</p>
-                <ol>
-                  <li>All information provided is accurate and up-to-date.</li>
-                  <li>You have the legal authority to register this brand.</li>
-                  <li>You will comply with all applicable laws and regulations regarding text messaging.</li>
-                  <li>You understand that registration fees may apply and are non-refundable.</li>
-                  <li>Brand registration may be subject to approval by the Campaign Registry.</li>
-                </ol>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `);
     }
   }
 
@@ -385,156 +143,6 @@ $(document).ready(function() {
     $('#optInDetailsContent').html(detailsContent);
     $('#optInDetailsModal').modal('show');
   });
-  
-  // Handle Brand Registration modal next step
-  $(document).on('click', '#nextStep', function() {
-    // Basic validation for step 1
-    let isValid = true;
-    $('#brand-registration-form-step1 input[required]').each(function() {
-      if ($(this).val() === '') {
-        $(this).addClass('has-error').parent().addClass('has-error');
-        isValid = false;
-      } else {
-        $(this).removeClass('has-error').parent().removeClass('has-error');
-      }
-    });
-    
-    if (isValid) {
-      // Show step 2, hide step 1
-      $('#brand-registration-step1').hide();
-      $('#brand-registration-step2').show();
-      $('#nextStep').hide();
-      $('#prevStep').show();
-      $('#submitRegistration').show();
-      
-      // Update step indicators
-      $('#step1-indicator').css('background-color', '#ccc');
-      $('#step2-indicator').css('background-color', '#00b0f0');
-    }
-  });
-  
-  // Handle Brand Registration modal previous step
-  $(document).on('click', '#prevStep', function() {
-    // Show step 1, hide step 2
-    $('#brand-registration-step2').hide();
-    $('#brand-registration-step1').show();
-    $('#prevStep').hide();
-    $('#submitRegistration').hide();
-    $('#nextStep').show();
-    
-    // Update step indicators
-    $('#step1-indicator').css('background-color', '#00b0f0');
-    $('#step2-indicator').css('background-color', '#ccc');
-  });
-  
-  // Handle Brand Registration submission
-  $(document).on('click', '#submitRegistration', function() {
-    // Basic validation for step 2
-    let isValid = true;
-    $('#brand-registration-form-step2 input[required], #brand-registration-form-step2 select[required], #brand-registration-form-step2 textarea[required]').each(function() {
-      if ($(this).val() === '') {
-        $(this).addClass('has-error').parent().addClass('has-error');
-        isValid = false;
-      } else {
-        $(this).removeClass('has-error').parent().removeClass('has-error');
-      }
-    });
-    
-    if (!$('#termsAgreement').prop('checked')) {
-      $('#termsAgreement').parent().addClass('has-error');
-      isValid = false;
-    } else {
-      $('#termsAgreement').parent().removeClass('has-error');
-    }
-    
-    if (isValid) {
-      // Here you would normally submit the form data to your backend
-      // For now, we'll just close the modal and show a success message
-      $('#brandRegistrationModal').modal('hide');
-      alert('Brand registration submitted successfully!');
-    }
-  });
-  
-  // Handle clicking on Register Brand button
-  $(document).on('click', '.btn-register-brand, button:contains("Register Brand")', function() {
-    // Reset the form and show step 1
-    $('#brand-registration-form-step1')[0].reset();
-    $('#brand-registration-form-step2')[0].reset();
-    $('#brand-registration-step1').show();
-    $('#brand-registration-step2').hide();
-    $('#prevStep').hide();
-    $('#submitRegistration').hide();
-    $('#nextStep').show();
-    
-    // Reset step indicators
-    $('#step1-indicator').css('background-color', '#00b0f0');
-    $('#step2-indicator').css('background-color', '#ccc');
-    
-    // Show the modal
-    $('#brandRegistrationModal').modal('show');
-  });
-  
-  // Setup domain autocomplete functionality
-  const dummyDomains = ['arkansasportablebnw', 'exformo', 'gjavel', 'sxac'];
-  
-  $(document).on('focus', '#domain', function() {
-    setupDomainAutocomplete();
-  });
-  
-  $(document).on('keyup', '#domain', function() {
-    const searchTerm = $(this).val().toLowerCase();
-    if (searchTerm.length > 0) {
-      const filteredDomains = dummyDomains.filter(domain => 
-        domain.toLowerCase().includes(searchTerm)
-      );
-      
-      if (filteredDomains.length > 0) {
-        let suggestionsHtml = '';
-        filteredDomains.forEach(domain => {
-          suggestionsHtml += `<div class="domain-suggestion" data-domain="${domain}">${domain}</div>`;
-        });
-        
-        $('#domain-suggestions').html(suggestionsHtml).show();
-      } else {
-        $('#domain-suggestions').hide();
-      }
-    } else {
-      $('#domain-suggestions').hide();
-    }
-  });
-  
-  $(document).on('click', '.domain-suggestion', function() {
-    const selectedDomain = $(this).data('domain');
-    $('#domain').val(selectedDomain);
-    $('#domain-suggestions').hide();
-  });
-  
-  $(document).on('blur', '#domain', function() {
-    // Delay hiding suggestions to allow for clicks
-    setTimeout(() => {
-      $('#domain-suggestions').hide();
-    }, 200);
-  });
-  
-  function setupDomainAutocomplete() {
-    // Add styles for domain suggestions
-    if (!$('#domain-suggestions-styles').length) {
-      $('head').append(`
-        <style id="domain-suggestions-styles">
-          .domain-suggestion {
-            padding: 5px 10px;
-            cursor: pointer;
-          }
-          .domain-suggestion:hover {
-            background-color: #f0f0f0;
-          }
-          .domain-autocomplete-container {
-            position: relative;
-          }
-        </style>
-      `);
-    }
-  }
 
   // Function to load SMS interface content
   function loadSMSContent() {
@@ -567,6 +175,104 @@ $(document).ready(function() {
                   <div class="row">
                     <div class="col-md-8">
                       <!-- Filters could go here -->
+                    </div>
+                    <div class="col-md-4 text-right">
+                      <button class="btn btn-default">Export</button>
+                      <button class="btn btn-primary">Add SMS Number</button>
+                    </div>
+                  </div>
+                </div>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>SMS Number</th>
+                      <th>Treatment</th>
+                      <th>Destination</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8350</a></td>
+                      <td>User</td>
+                      <td>100</td>
+                    </tr>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8355</a></td>
+                      <td>User</td>
+                      <td>100</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Conversations Tab -->
+          <div role="tabpanel" class="tab-pane" id="conversations">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="filters-section">
+                  <h4>Filters</h4>
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="date-range-picker">
+                        <input type="text" class="form-control" value="02/26/2025 12:00 am — 03/05/2025 11:59 pm" />
+                      </div>
+                    </div>
+                    <div class="col-md-4 text-right">
+                      <button class="btn btn-default">Export</button>
+                    </div>
+                  </div>
+                </div>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Phone Number</th>
+                      <th># of Messages</th>
+                      <th>Most Recent Message</th>
+                      <th>Date/Time</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 283-0327</a></td>
+                      <td>12</td>
+                      <td>Hey, just checking in about the meeting tomorrow...</td>
+                      <td>Yesterday, 4:43 pm</td>
+                      <td><i class="fa fa-comment-o" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8355</a></td>
+                      <td>8</td>
+                      <td>Thanks for the update. I'll review it and get back...</td>
+                      <td>Yesterday, 2:32 pm</td>
+                      <td><i class="fa fa-comment-o" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr>
+                      <td><a href="#" style="color: #00b0f0;">(479) 845-8350</a></td>
+                      <td>5</td>
+                      <td>Perfect, see you then!</td>
+                      <td>Yesterday, 2:28 pm</td>
+                      <td><i class="fa fa-comment-o" aria-hidden="true"></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- History Tab -->
+          <div role="tabpanel" class="tab-pane" id="history">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <div class="filters-section">
+                  <h4>Filters</h4>
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="date-range-picker">
+                        <input type="text" class="form-control" value="02/26/2025 12:00 am — 03/05/2025 11:59 pm" />
+                      </div>
                     </div>
                     <div class="col-md-4 text-right">
                       <button class="btn btn-default">Export</button>
@@ -734,7 +440,7 @@ $(document).ready(function() {
               <div role="tabpanel" class="tab-pane" id="brands">
                 <div class="panel panel-default">
                   <div class="panel-body">
-                    <button class="btn btn-primary btn-register-brand">Register Brand</button>
+                    <button class="btn btn-primary">Register Brand</button>
                     <div class="no-data-message" style="text-align: center; padding: 50px;">
                       <p>No brands registered yet. Click "Register Brand" to create your first brand.</p>
                     </div>
@@ -880,14 +586,6 @@ $(document).ready(function() {
           background-color: #f9f9f9;
           border-bottom: 2px solid #ddd;
         }
-        .has-error .form-control {
-          border-color: #a94442;
-          box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-        }
-        .step-indicator .badge {
-          padding: 5px 10px;
-          margin-right: 5px;
-        }
       </style>
     `;
     $('head').append(customStyles);
@@ -898,11 +596,6 @@ $(document).ready(function() {
         e.preventDefault();
         $(this).tab('show');
       });
-    }
-    
-    // Initialize tooltips if available
-    if ($.fn.tooltip) {
-      $('[data-toggle="tooltip"]').tooltip();
     }
   }
 });
