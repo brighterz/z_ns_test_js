@@ -905,7 +905,7 @@ $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();
     }
   }
-});-right">
+}).addClass("text-right");
                       <button class="btn btn-default">Export</button>
                       <button class="btn btn-primary">Add SMS Number</button>
                     </div>
