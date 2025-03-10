@@ -104,7 +104,7 @@ $(document).ready(function() {
       // Add Register Brand modal
       $('body').append(`
         <div class="modal fade modal-iotum-status" id="registerBrandModal" tabindex="-1" role="dialog" aria-labelledby="registerBrandModalLabel" aria-hidden="true">
-          <div class="modal-dialog" style="width: 800px;">
+          <div class="modal-dialog modal-lg">
             <div class="modal-content">
               <div class="modal-header-iotum-status">
                 <h3 class="modal-title" id="registerBrandModalLabel">
@@ -348,6 +348,47 @@ $(document).ready(function() {
     $('#registerBrandModal').modal('show');
     currentRegisterStep = 1;
     showRegisterBrandStep(1);
+    
+    // Add custom styles for the brand registration modal if not already added
+    if (!$('#brandRegistrationStyles').length) {
+      $('head').append(`
+        <style id="brandRegistrationStyles">
+          #registerBrandModal .modal-dialog {
+            max-width: 90%;
+            width: auto;
+            margin: 30px auto;
+          }
+          #registerBrandModal .modal-content {
+            border-radius: 5px;
+          }
+          #registerBrandModal .modal-body-iotum-status {
+            padding: 20px;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+          }
+          #registerBrandModal label {
+            font-weight: 500;
+          }
+          #registerBrandModal .form-control {
+            border-radius: 3px;
+          }
+          #registerBrandModal .row {
+            margin-left: -10px;
+            margin-right: -10px;
+          }
+          #registerBrandModal .col-md-6 {
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+          @media (max-width: 768px) {
+            #registerBrandModal .modal-dialog {
+              max-width: 95%;
+              margin: 10px auto;
+            }
+          }
+        </style>
+      `);
+    }
   });
   
   // Handle form navigation
@@ -380,27 +421,78 @@ $(document).ready(function() {
       value = value.substring(0, 2) + '-' + value.substring(2);
     }
     $(this).val(value);
+    
+    // Remove error styling on input
+    $(this).parent().removeClass('has-error');
+    $(this).next('.validation-error').remove();
   });
+  
+  // Remove validation errors when input changes
+  $(document).on('change input', '#registerBrandModal input, #registerBrandModal select', function() {
+    $(this).parent().removeClass('has-error');
+    $(this).next('.validation-error').remove();
+  });
+  
+  // Add form field styling
+  $('head').append(`
+    <style>
+      .has-error .form-control {
+        border-color: #a94442;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+      }
+      .has-error .form-control:focus {
+        border-color: #843534;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px #ce8483;
+      }
+      .validation-error {
+        display: block;
+        margin-top: 5px;
+        margin-bottom: 10px;
+      }
+      #registerBrandModal .form-control:focus {
+        border-color: #00b0f0;
+        outline: 0;
+        box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(0, 176, 240, .6);
+      }
+    </style>
+  `);
   
   // Variables to track the current form step
   let currentRegisterStep = 1;
   
   function showRegisterBrandStep(step) {
     currentRegisterStep = step;
+    
+    // Clear validation errors when switching steps
+    $('.validation-error').remove();
+    $('.has-error').removeClass('has-error');
+    
     if (step === 1) {
-      $('#registerBrandStep1').show();
-      $('#registerBrandStep2').hide();
-      $('#registerBrandStep1Buttons').show();
-      $('#registerBrandStep2Buttons').hide();
+      $('#registerBrandStep2').fadeOut(200, function() {
+        $('#registerBrandStep1').fadeIn(200);
+        $('#registerBrandStep1Buttons').show();
+        $('#registerBrandStep2Buttons').hide();
+        
+        // Update progress indicator if we add one later
+        $('#registerBrandModal').scrollTop(0);
+      });
     } else {
-      $('#registerBrandStep1').hide();
-      $('#registerBrandStep2').show();
-      $('#registerBrandStep1Buttons').hide();
-      $('#registerBrandStep2Buttons').show();
+      $('#registerBrandStep1').fadeOut(200, function() {
+        $('#registerBrandStep2').fadeIn(200);
+        $('#registerBrandStep1Buttons').hide();
+        $('#registerBrandStep2Buttons').show();
+        
+        // Update progress indicator if we add one later
+        $('#registerBrandModal').scrollTop(0);
+      });
     }
   }
   
   function validateRegisterBrandStep(step) {
+    // Clear previous validation messages
+    $('.validation-error').remove();
+    $('.has-error').removeClass('has-error');
+    
     if (step === 1) {
       // Validate required fields for step 1
       const legalFormType = $('#legalFormType').val();
@@ -408,33 +500,39 @@ $(document).ready(function() {
       const legalCompanyName = $('#legalCompanyName').val().trim();
       const taxNumberEIN = $('#taxNumberEIN').val().trim();
       const verticalType = $('#verticalType').val();
+      let isValid = true;
       
       if (!legalFormType || legalFormType === '-- select an option --') {
-        alert('Please select a Type of Legal Form');
-        return false;
+        $('#legalFormType').parent().addClass('has-error');
+        $('#legalFormType').after('<span class="validation-error" style="color: red; font-size: 12px;">Please select a Type of Legal Form</span>');
+        isValid = false;
       }
       
       if (!countryOfRegistration || countryOfRegistration === '-- select an option --') {
-        alert('Please select a Country of Registration');
-        return false;
+        $('#countryOfRegistration').parent().addClass('has-error');
+        $('#countryOfRegistration').after('<span class="validation-error" style="color: red; font-size: 12px;">Please select a Country of Registration</span>');
+        isValid = false;
       }
       
       if (!legalCompanyName) {
-        alert('Please enter a Legal Company Name');
-        return false;
+        $('#legalCompanyName').parent().addClass('has-error');
+        $('#legalCompanyName').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a Legal Company Name</span>');
+        isValid = false;
       }
       
       if (!taxNumberEIN || !taxNumberEIN.match(/^\d{2}-\d{7}$/)) {
-        alert('Please enter a valid Tax Number/ID/EIN (format: XX-XXXXXXX)');
-        return false;
+        $('#taxNumberEIN').parent().addClass('has-error');
+        $('#taxNumberEIN').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a valid Tax Number/ID/EIN (format: XX-XXXXXXX)</span>');
+        isValid = false;
       }
       
       if (!verticalType || verticalType === '-- select an option --') {
-        alert('Please select a Vertical Type');
-        return false;
+        $('#verticalType').parent().addClass('has-error');
+        $('#verticalType').after('<span class="validation-error" style="color: red; font-size: 12px;">Please select a Vertical Type</span>');
+        isValid = false;
       }
       
-      return true;
+      return isValid;
     } else if (step === 2) {
       // Validate required fields for step 2
       const firstName = $('#firstName').val().trim();
@@ -447,58 +545,69 @@ $(document).ready(function() {
       const postalCode = $('#postalCode').val().trim();
       const website = $('#website').val().trim();
       const domain = $('#domain').val().trim();
+      let isValid = true;
       
       if (!firstName) {
-        alert('Please enter a First Name');
-        return false;
+        $('#firstName').parent().addClass('has-error');
+        $('#firstName').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a First Name</span>');
+        isValid = false;
       }
       
       if (!lastName) {
-        alert('Please enter a Last Name');
-        return false;
+        $('#lastName').parent().addClass('has-error');
+        $('#lastName').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a Last Name</span>');
+        isValid = false;
       }
       
       if (!email || !isValidEmail(email)) {
-        alert('Please enter a valid Email');
-        return false;
+        $('#email').parent().addClass('has-error');
+        $('#email').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a valid Email</span>');
+        isValid = false;
       }
       
       if (!phoneNumber) {
-        alert('Please enter a Phone Number');
-        return false;
+        $('#phoneNumber').parent().addClass('has-error');
+        $('#phoneNumber').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a Phone Number</span>');
+        isValid = false;
       }
       
       if (!address) {
-        alert('Please enter an Address');
-        return false;
+        $('#address').parent().addClass('has-error');
+        $('#address').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter an Address</span>');
+        isValid = false;
       }
       
       if (!city) {
-        alert('Please enter a City');
-        return false;
+        $('#city').parent().addClass('has-error');
+        $('#city').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a City</span>');
+        isValid = false;
       }
       
       if (!state) {
-        alert('Please enter a State/Region');
-        return false;
+        $('#state').parent().addClass('has-error');
+        $('#state').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a State/Region</span>');
+        isValid = false;
       }
       
       if (!postalCode) {
-        alert('Please enter a Postal Code/ZIP Code');
-        return false;
+        $('#postalCode').parent().addClass('has-error');
+        $('#postalCode').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a Postal Code/ZIP Code</span>');
+        isValid = false;
       }
       
       if (!website) {
-        alert('Please enter a Website');
-        return false;
+        $('#website').parent().addClass('has-error');
+        $('#website').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a Website</span>');
+        isValid = false;
       }
       
       if (!domain) {
-        alert('Please enter a Domain');
-        return false;
+        $('#domain').parent().addClass('has-error');
+        $('#domain').after('<span class="validation-error" style="color: red; font-size: 12px;">Please enter a Domain</span>');
+        isValid = false;
       }
       
-      return true;
+      return isValid;
     }
     
     return false;
