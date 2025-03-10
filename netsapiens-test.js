@@ -100,6 +100,205 @@ $(document).ready(function() {
           </div>
         </div>
       `);
+      
+      // Add Register Brand modal
+      $('body').append(`
+        <div class="modal fade modal-iotum-status" id="registerBrandModal" tabindex="-1" role="dialog" aria-labelledby="registerBrandModalLabel" aria-hidden="true">
+          <div class="modal-dialog" style="width: 800px;">
+            <div class="modal-content">
+              <div class="modal-header-iotum-status">
+                <h3 class="modal-title" id="registerBrandModalLabel">
+                  Register Brand
+                </h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body-iotum-status">
+                <!-- Step 1 Form -->
+                <div id="registerBrandStep1">
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="legalFormType">Type of Legal Form *</label>
+                      <select id="legalFormType" class="form-control">
+                        <option>-- select an option --</option>
+                        <option>Private Company</option>
+                        <option>Publicly Traded Company</option>
+                        <option>Non-Profit Organization</option>
+                        <option>Government</option>
+                        <option>Sole Proprietor</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="countryOfRegistration">Country of Registration *</label>
+                      <select id="countryOfRegistration" class="form-control">
+                        <option>-- select an option --</option>
+                        <option>United States</option>
+                        <option>Canada</option>
+                        <option>Puerto Rico</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="legalCompanyName">Legal Company Name *</label>
+                      <input type="text" id="legalCompanyName" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="dbaBrandName">DBA or Brand Name (if different from Legal Name)</label>
+                      <input type="text" id="dbaBrandName" class="form-control">
+                    </div>
+                  </div>
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="taxNumberIdCountry">Tax Number/ID/EIN Issuing Country</label>
+                      <select id="taxNumberIdCountry" class="form-control">
+                        <option>-- select an option --</option>
+                        <option>United States</option>
+                        <option>Canada</option>
+                        <option>Puerto Rico</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="taxNumberEIN">Tax Number/ID/EIN *</label>
+                      <input type="text" id="taxNumberEIN" class="form-control" placeholder="XX-XXXXXXX">
+                    </div>
+                  </div>
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="alternativeBusinessIdentifier">Alternative Business Identifier Type</label>
+                      <select id="alternativeBusinessIdentifier" class="form-control">
+                        <option>-- select an option --</option>
+                        <option>DUNS</option>
+                        <option>GIIN</option>
+                        <option>LEI</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="alternativeBusinessNumber">DUNS or GIIN or LEI Number</label>
+                      <input type="text" id="alternativeBusinessNumber" class="form-control">
+                    </div>
+                  </div>
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="verticalType">Vertical Type *</label>
+                      <select id="verticalType" class="form-control">
+                        <option>-- select an option --</option>
+                        <option>Agriculture</option>
+                        <option>Construction, Materials, and Trade Services</option>
+                        <option>Education</option>
+                        <option>Energy and Utilities</option>
+                        <option>Entertainment</option>
+                        <option>Financial Services</option>
+                        <option>Gambling and Lottery</option>
+                        <option>Government Services and Agencies</option>
+                        <option>Healthcare and Life Sciences</option>
+                        <option>Hospitality and Travel</option>
+                        <option>HR, Staffing, and Recruitment</option>
+                        <option>Information Technology Services</option>
+                        <option>Insurance</option>
+                        <option>Legal</option>
+                        <option>Manufacturing</option>
+                        <option>Media and Communications</option>
+                        <option>Non-Profit Organization</option>
+                        <option>Political</option>
+                        <option>Postal and Delivery</option>
+                        <option>Professional Services</option>
+                        <option>Real Estate</option>
+                        <option>Retail and Consumer Products</option>
+                        <option>Transportation and Logistics</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="referenceId">Reference ID</label>
+                      <input type="text" id="referenceId" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Step 2 Form -->
+                <div id="registerBrandStep2" style="display: none;">
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="firstName">First Name *</label>
+                      <input type="text" id="firstName" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="lastName">Last Name *</label>
+                      <input type="text" id="lastName" class="form-control">
+                    </div>
+                  </div>
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="email">Email *</label>
+                      <input type="email" id="email" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="phoneNumber">Phone Number *</label>
+                      <input type="text" id="phoneNumber" class="form-control" placeholder="+00000000000">
+                    </div>
+                  </div>
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="address">Address / Street *</label>
+                      <input type="text" id="address" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="city">City *</label>
+                      <input type="text" id="city" class="form-control">
+                    </div>
+                  </div>
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="state">State / Region *</label>
+                      <input type="text" id="state" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="postalCode">Postal Code/ZIP Code *</label>
+                      <input type="text" id="postalCode" class="form-control" placeholder="00000-0000">
+                    </div>
+                  </div>
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="website">Website *</label>
+                      <input type="url" id="website" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                      <label for="domain">Domain *</label>
+                      <input type="text" id="domain" class="form-control" placeholder="Enter a domain name">
+                    </div>
+                  </div>
+                  <div class="row" style="margin-bottom: 15px;">
+                    <div class="col-md-6">
+                      <label for="stockExchange">Stock Exchange</label>
+                      <select id="stockExchange" class="form-control">
+                        <option>-- select an option --</option>
+                        <option>NYSE</option>
+                        <option>NASDAQ</option>
+                        <option>TSX</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="stockSymbol">Stock Symbol</label>
+                      <input type="text" id="stockSymbol" class="form-control">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer-iotum-status">
+                <div id="registerBrandStep1Buttons">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-primary" id="registerBrandNextBtn">Next</button>
+                </div>
+                <div id="registerBrandStep2Buttons" style="display: none;">
+                  <button type="button" class="btn btn-default" id="registerBrandPrevBtn">Previous</button>
+                  <button type="button" class="btn btn-primary" id="registerBrandSubmitBtn">Submit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
     }
   }
 
@@ -143,7 +342,184 @@ $(document).ready(function() {
     $('#optInDetailsContent').html(detailsContent);
     $('#optInDetailsModal').modal('show');
   });
+  
+  // Handle Register Brand button click
+  $(document).on('click', '#registerBrandBtn', function() {
+    $('#registerBrandModal').modal('show');
+    currentRegisterStep = 1;
+    showRegisterBrandStep(1);
+  });
+  
+  // Handle form navigation
+  $(document).on('click', '#registerBrandNextBtn', function() {
+    if (validateRegisterBrandStep(1)) {
+      showRegisterBrandStep(2);
+    }
+  });
+  
+  $(document).on('click', '#registerBrandPrevBtn', function() {
+    showRegisterBrandStep(1);
+  });
+  
+  $(document).on('click', '#registerBrandSubmitBtn', function() {
+    if (validateRegisterBrandStep(2)) {
+      // Here you would typically submit the data to your backend
+      alert('Brand registration submitted successfully!');
+      $('#registerBrandModal').modal('hide');
+      // Optionally refresh the brands list
+    }
+  });
+  
+  // EIN validation
+  $(document).on('input', '#taxNumberEIN', function() {
+    let value = $(this).val().replace(/[^\d]/g, '');
+    if (value.length > 9) {
+      value = value.substring(0, 9);
+    }
+    if (value.length > 2) {
+      value = value.substring(0, 2) + '-' + value.substring(2);
+    }
+    $(this).val(value);
+  });
+  
+  // Variables to track the current form step
+  let currentRegisterStep = 1;
+  
+  function showRegisterBrandStep(step) {
+    currentRegisterStep = step;
+    if (step === 1) {
+      $('#registerBrandStep1').show();
+      $('#registerBrandStep2').hide();
+      $('#registerBrandStep1Buttons').show();
+      $('#registerBrandStep2Buttons').hide();
+    } else {
+      $('#registerBrandStep1').hide();
+      $('#registerBrandStep2').show();
+      $('#registerBrandStep1Buttons').hide();
+      $('#registerBrandStep2Buttons').show();
+    }
+  }
+  
+  function validateRegisterBrandStep(step) {
+    if (step === 1) {
+      // Validate required fields for step 1
+      const legalFormType = $('#legalFormType').val();
+      const countryOfRegistration = $('#countryOfRegistration').val();
+      const legalCompanyName = $('#legalCompanyName').val().trim();
+      const taxNumberEIN = $('#taxNumberEIN').val().trim();
+      const verticalType = $('#verticalType').val();
+      
+      if (!legalFormType || legalFormType === '-- select an option --') {
+        alert('Please select a Type of Legal Form');
+        return false;
+      }
+      
+      if (!countryOfRegistration || countryOfRegistration === '-- select an option --') {
+        alert('Please select a Country of Registration');
+        return false;
+      }
+      
+      if (!legalCompanyName) {
+        alert('Please enter a Legal Company Name');
+        return false;
+      }
+      
+      if (!taxNumberEIN || !taxNumberEIN.match(/^\d{2}-\d{7}$/)) {
+        alert('Please enter a valid Tax Number/ID/EIN (format: XX-XXXXXXX)');
+        return false;
+      }
+      
+      if (!verticalType || verticalType === '-- select an option --') {
+        alert('Please select a Vertical Type');
+        return false;
+      }
+      
+      return true;
+    } else if (step === 2) {
+      // Validate required fields for step 2
+      const firstName = $('#firstName').val().trim();
+      const lastName = $('#lastName').val().trim();
+      const email = $('#email').val().trim();
+      const phoneNumber = $('#phoneNumber').val().trim();
+      const address = $('#address').val().trim();
+      const city = $('#city').val().trim();
+      const state = $('#state').val().trim();
+      const postalCode = $('#postalCode').val().trim();
+      const website = $('#website').val().trim();
+      const domain = $('#domain').val().trim();
+      
+      if (!firstName) {
+        alert('Please enter a First Name');
+        return false;
+      }
+      
+      if (!lastName) {
+        alert('Please enter a Last Name');
+        return false;
+      }
+      
+      if (!email || !isValidEmail(email)) {
+        alert('Please enter a valid Email');
+        return false;
+      }
+      
+      if (!phoneNumber) {
+        alert('Please enter a Phone Number');
+        return false;
+      }
+      
+      if (!address) {
+        alert('Please enter an Address');
+        return false;
+      }
+      
+      if (!city) {
+        alert('Please enter a City');
+        return false;
+      }
+      
+      if (!state) {
+        alert('Please enter a State/Region');
+        return false;
+      }
+      
+      if (!postalCode) {
+        alert('Please enter a Postal Code/ZIP Code');
+        return false;
+      }
+      
+      if (!website) {
+        alert('Please enter a Website');
+        return false;
+      }
+      
+      if (!domain) {
+        alert('Please enter a Domain');
+        return false;
+      }
+      
+      return true;
+    }
+    
+    return false;
+  }
+  
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
 
+  // Toggle Register Brand modal footer buttons based on step
+  function toggleRegisterBrandFooterButtons() {
+    if (currentRegisterStep === 1) {
+      $('#registerBrandStep1Buttons').show();
+      $('#registerBrandStep2Buttons').hide();
+    } else {
+      $('#registerBrandStep1Buttons').hide();
+      $('#registerBrandStep2Buttons').show();
+    }
+  }
+  
   // Function to load SMS interface content
   function loadSMSContent() {
     // Main SMS container
@@ -440,7 +816,7 @@ $(document).ready(function() {
               <div role="tabpanel" class="tab-pane" id="brands">
                 <div class="panel panel-default">
                   <div class="panel-body">
-                    <button class="btn btn-primary">Register Brand</button>
+                    <button class="btn btn-primary" id="registerBrandBtn">Register Brand</button>
                     <div class="no-data-message" style="text-align: center; padding: 50px;">
                       <p>No brands registered yet. Click "Register Brand" to create your first brand.</p>
                     </div>
@@ -534,6 +910,13 @@ $(document).ready(function() {
           </div>
         </div>
       </div>
+      
+      <!-- Footer copyright -->
+      <div class="sms-footer" style="text-align: center; margin-top: 30px; color: #777; font-size: 12px;">
+        Copyright © 2008-2025 by APOLLO<br>
+        Manager Portal 45.2.2
+      </div>
+    `;
     
     // Inject the SMS content into the page
     $('#content').html(smsContent);
