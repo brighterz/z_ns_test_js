@@ -905,7 +905,7 @@ $(document).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();
     }
   }
-}).addClass("text-right");
+});-right">
                       <button class="btn btn-default">Export</button>
                       <button class="btn btn-primary">Add SMS Number</button>
                     </div>
@@ -991,6 +991,7 @@ $(document).ready(function() {
             </div>
           </div>
           
+
           <!-- History Tab -->
           <div role="tabpanel" class="tab-pane" id="history">
             <div class="panel panel-default">
