@@ -534,13 +534,6 @@ $(document).ready(function() {
           </div>
         </div>
       </div>
-      
-      <!-- Footer copyright -->
-      <div class="sms-footer" style="text-align: center; margin-top: 30px; color: #777; font-size: 12px;">
-        Copyright © 2008-2025 by APOLLO<br>
-        Manager Portal 45.2.2
-      </div>
-    `;
     
     // Inject the SMS content into the page
     $('#content').html(smsContent);
